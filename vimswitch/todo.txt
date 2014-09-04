@@ -1,0 +1,17 @@
+On back:
+
+
+Todo:
+- Move the DiskIo tests into an integration test suite
+- Rename the settings functions to not be getters
+- Use os.path.join instead of appending '/'
+- Get some naming consistency:
+    - Use 'path' instead of filename or dir
+    - Some tests contain 'when' some don't. Make it consistent
+    ?- Path means dir + filename
+    ?- Dir means just dir
+- rename ProfileCache.getLocation to getProfileLocation
+
+
+Done:
+# rename Settings.getDefaultProfileName() to getDefaultProfile?
