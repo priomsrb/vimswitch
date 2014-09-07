@@ -8,7 +8,8 @@ class IntegrationTestCase(unittest.TestCase):
         return os.path.dirname(__file__)
 
     def getFullPath(self, path):
-        return os.path.join(self.getWorkingDir(), path)
+        fullPath = os.path.join(self.getWorkingDir(), path)
+        return os.path.normpath(fullPath)
 
     def getWorkingDir(self):
         dirName = 'workingDir'

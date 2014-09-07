@@ -2,9 +2,12 @@ On back:
 
 
 Todo:
+- Create a BaseDiskIoTest class. (set __test__ = False)
+    - Make Test_DiskIo inherit from BaseDiskIoTest (and set __test__ = True)
+    - Make Test_FakeDiskIo inherit from BaseDiskIoTest (and set __test__ = True)
+- Create a Path class to simplify path handling
 - Move the DiskIo tests into an integration test suite
 - Rename the settings functions to not be getters
-- Use os.path.join instead of appending '/'
 - Get some naming consistency:
     - Use 'path' instead of filename or dir
     - Some tests contain 'when' some don't. Make it consistent
@@ -14,4 +17,5 @@ Todo:
 
 
 Done:
-# rename Settings.getDefaultProfileName() to getDefaultProfile?
+- rename Settings.getDefaultProfileName() to getDefaultProfile?
+- Use os.path.join instead of appending '/'

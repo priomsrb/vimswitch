@@ -4,6 +4,7 @@ from mock import MagicMock
 from vimswitch.Profile import Profile
 from vimswitch.ProfileCache import ProfileCache
 from vimswitch.ProfileCopier import ProfileCopier
+from vimswitch.Path import Path
 
 
 class TestProfileCopier(unittest.TestCase):
@@ -22,39 +23,39 @@ class TestProfileCopier(unittest.TestCase):
     def test_copyToHome_deletesHomeData(self):
         self.profileCopier.copyToHome(self.profile)
 
-        homePath = '/home/foo'
+        homePath = Path('/home/foo')
         self.profileDataIo.delete.assert_called_with(homePath)
 
     def test_copyToHome_deletesHomeDir_fromSettings(self):
-        self.settings.getHomeDir.return_value = 'testHomeDir'
+        self.settings.getHomeDir.return_value = Path('testHomeDir')
 
         self.profileCopier.copyToHome(self.profile)
 
-        self.profileDataIo.delete.assert_called_with('testHomeDir')
+        self.profileDataIo.delete.assert_called_with(Path('testHomeDir'))
 
     def test_copyToHome_copiesFromProfileToHome(self):
         self.profileCopier.copyToHome(self.profile)
 
-        profilePath = '/home/foo/.vimswitch/test.vimrc'
-        homePath = '/home/foo'
+        profilePath = Path('/home/foo/.vimswitch/test.vimrc')
+        homePath = Path('/home/foo')
         self.profileDataIo.copy.assert_called_with(profilePath, homePath)
 
     def test_copyToHome_copiesFromCacheDir_fromSettings(self):
-        self.settings.getCacheDir.return_value = 'testCacheDir'
+        self.settings.getCacheDir.return_value = Path('testCacheDir')
 
         self.profileCopier.copyToHome(self.profile)
 
-        profilePath = 'testCacheDir/test.vimrc'
-        homePath = '/home/foo'
+        profilePath = Path('testCacheDir/test.vimrc')
+        homePath = Path('/home/foo')
         self.profileDataIo.copy.assert_called_with(profilePath, homePath)
 
     def test_copyToHome_copiesToHomeDir_fromSettings(self):
-        self.settings.getHomeDir.return_value = 'testHomeDir'
+        self.settings.getHomeDir.return_value = Path('testHomeDir')
 
         self.profileCopier.copyToHome(self.profile)
 
-        profilePath = '/home/foo/.vimswitch/test.vimrc'
-        homePath = 'testHomeDir'
+        profilePath = Path('/home/foo/.vimswitch/test.vimrc')
+        homePath = Path('testHomeDir')
         self.profileDataIo.copy.assert_called_with(profilePath, homePath)
 
     # ProfileCopier.copyFromHome
@@ -78,28 +79,28 @@ class TestProfileCopier(unittest.TestCase):
     def test_copyfromHome_deletesProfileDir(self):
         self.profileCopier.copyFromHome(self.profile)
 
-        profilePath = '/home/foo/.vimswitch/test.vimrc'
+        profilePath = Path('/home/foo/.vimswitch/test.vimrc')
         self.profileDataIo.delete.assert_called_with(profilePath)
 
     def test_copyfromHome_copiesFromHomeToProfile(self):
         self.profileCopier.copyFromHome(self.profile)
 
-        homePath = '/home/foo'
-        profilePath = '/home/foo/.vimswitch/test.vimrc'
+        homePath = Path('/home/foo')
+        profilePath = Path('/home/foo/.vimswitch/test.vimrc')
         self.profileDataIo.copy.assert_called_with(homePath, profilePath)
 
     def test_copyfromHome_copiesFromHomeDir_fromSettings(self):
-        self.settings.getHomeDir.return_value = 'testHomeDir'
+        self.settings.getHomeDir.return_value = Path('testHomeDir')
         self.profileCopier.copyFromHome(self.profile)
 
-        homePath = 'testHomeDir'
-        profilePath = '/home/foo/.vimswitch/test.vimrc'
+        homePath = Path('testHomeDir')
+        profilePath = Path('/home/foo/.vimswitch/test.vimrc')
         self.profileDataIo.copy.assert_called_with(homePath, profilePath)
 
     def test_copyfromHome_copiesToCacheDir_fromSettings(self):
-        self.settings.getCacheDir.return_value = 'testCacheDir'
+        self.settings.getCacheDir.return_value = Path('testCacheDir')
         self.profileCopier.copyFromHome(self.profile)
 
-        homePath = '/home/foo'
-        profilePath = 'testCacheDir/test.vimrc'
+        homePath = Path('/home/foo')
+        profilePath = Path('testCacheDir/test.vimrc')
         self.profileDataIo.copy.assert_called_with(homePath, profilePath)
