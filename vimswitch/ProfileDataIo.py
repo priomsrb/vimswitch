@@ -1,4 +1,4 @@
-from Path import Path
+import os
 
 
 class ProfileDataIo:
@@ -9,12 +9,12 @@ class ProfileDataIo:
     def delete(self, path):
         """Deletes profile data found at path"""
         for file in self.settings.getProfileFiles():
-            filePath = path.join(file)
+            filePath = os.path.join(path, file)
             if self.diskIo.fileExists(filePath):
                 self.diskIo.deleteFile(filePath)
 
         for dir in self.settings.getProfileDirs():
-            dirPath = path.join(dir)
+            dirPath = os.path.join(path, dir)
             if self.diskIo.dirExists(dirPath):
                 self.diskIo.deleteDir(dirPath)
 
@@ -24,13 +24,13 @@ class ProfileDataIo:
         files at destPath.
         """
         for file in self.settings.getProfileFiles():
-            srcFilePath = srcPath.join(file)
-            destFilePath = destPath.join(file)
+            srcFilePath = os.path.join(srcPath, file)
+            destFilePath = os.path.join(destPath, file)
             if self.diskIo.fileExists(srcFilePath):
                 self.diskIo.copyFile(srcFilePath, destFilePath)
 
         for dir in self.settings.getProfileDirs():
-            srcDirPath = srcPath.join(dir)
-            destDirPath = destPath.join(dir)
+            srcDirPath = os.path.join(srcPath, dir)
+            destDirPath = os.path.join(destPath, dir)
             if self.diskIo.dirExists(srcDirPath):
                 self.diskIo.copyDir(srcDirPath, destDirPath)

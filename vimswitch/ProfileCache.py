@@ -1,3 +1,6 @@
+import os
+
+
 class ProfileCache:
     def __init__(self, settings, diskIo):
         self.settings = settings
@@ -9,7 +12,8 @@ class ProfileCache:
 
     def getLocation(self, profile):
         """Returns the path where profile is located"""
-        return self.settings.getCacheDir().join(profile.getDirName())
+        fullPath = os.path.join(self.settings.getCacheDir(), profile.getDirName())
+        return os.path.normpath(fullPath)
 
     def createEmptyProfile(self, profile):
         location = self.getLocation(profile)

@@ -1,6 +1,6 @@
 @echo off
 :loop
 cls
-nosetests
+nosetests --nocapture
 pause
 goto loop

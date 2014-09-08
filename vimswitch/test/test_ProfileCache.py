@@ -1,9 +1,9 @@
 import unittest
 import Stubs
+import os
 from mock import MagicMock
 from vimswitch.ProfileCache import ProfileCache
 from vimswitch.Profile import Profile
-from vimswitch.Path import Path
 
 
 class TestProfileCache(unittest.TestCase):
@@ -34,15 +34,15 @@ class TestProfileCache(unittest.TestCase):
     # ProfileCache.getLocation
 
     def test_getLocation(self):
-        self.settings.getCacheDir.return_value = Path('/foo/bar/cache')
+        self.settings.getCacheDir.return_value = '/foo/bar/cache'
         profile = Profile('test/vimrc')
         result = self.profileCache.getLocation(profile)
-        self.assertEquals(result, Path('/foo/bar/cache/test.vimrc'))
+        self.assertEquals(result, os.path.normpath('/foo/bar/cache/test.vimrc'))
 
     # ProfileCache.createEmptyProfile
 
     def test_createEmptyProfile_profileDoesNotExist_createsProfileDir(self):
-        self.settings.getCacheDir.return_value = Path('/foo/bar/cache')
+        self.settings.getCacheDir.return_value = '/foo/bar/cache'
         profile = Profile('default')
         self.profileCache.createEmptyProfile(profile)
-        self.diskIo.createDir.assert_called_with(Path('/foo/bar/cache/default'))
+        self.diskIo.createDir.assert_called_with(os.path.normpath('/foo/bar/cache/default'))

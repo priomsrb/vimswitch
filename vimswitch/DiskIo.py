@@ -4,6 +4,14 @@ import os
 
 class DiskIo:
 
+    def createFile(self, filePath, contents):
+        with open(filePath, 'w') as file:
+            file.write(contents)
+
+    def getFileContents(self, filePath):
+        with open(filePath, 'r') as file:
+            return file.read()
+
     def copyFile(self, srcPath, destPath):
         shutil.copy(srcPath, destPath)
 
@@ -30,3 +38,6 @@ class DiskIo:
 
     def dirExists(self, dirPath):
         return os.path.isdir(dirPath)
+
+    def anyExists(self, path):
+        return self.fileExists(path) or self.dirExists(path)
