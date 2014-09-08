@@ -27,7 +27,7 @@ class TestProfileCopier(unittest.TestCase):
         self.profileDataIo.delete.assert_called_with(homePath)
 
     def test_copyToHome_deletesHomeDir_fromSettings(self):
-        self.settings.getHomeDir.return_value = 'testHomeDir'
+        self.settings.homePath = 'testHomeDir'
 
         self.profileCopier.copyToHome(self.profile)
 
@@ -41,7 +41,7 @@ class TestProfileCopier(unittest.TestCase):
         self.profileDataIo.copy.assert_called_with(profilePath, homePath)
 
     def test_copyToHome_copiesFromCacheDir_fromSettings(self):
-        self.settings.getCacheDir.return_value = 'testCacheDir'
+        self.settings.cachePath = 'testCacheDir'
 
         self.profileCopier.copyToHome(self.profile)
 
@@ -50,7 +50,7 @@ class TestProfileCopier(unittest.TestCase):
         self.profileDataIo.copy.assert_called_with(profilePath, homePath)
 
     def test_copyToHome_copiesToHomeDir_fromSettings(self):
-        self.settings.getHomeDir.return_value = 'testHomeDir'
+        self.settings.homePath = 'testHomeDir'
 
         self.profileCopier.copyToHome(self.profile)
 
@@ -90,7 +90,7 @@ class TestProfileCopier(unittest.TestCase):
         self.profileDataIo.copy.assert_called_with(homePath, profilePath)
 
     def test_copyfromHome_copiesFromHomeDir_fromSettings(self):
-        self.settings.getHomeDir.return_value = 'testHomeDir'
+        self.settings.homePath = 'testHomeDir'
         self.profileCopier.copyFromHome(self.profile)
 
         homePath = os.path.normpath('testHomeDir')
@@ -98,7 +98,7 @@ class TestProfileCopier(unittest.TestCase):
         self.profileDataIo.copy.assert_called_with(homePath, profilePath)
 
     def test_copyfromHome_copiesToCacheDir_fromSettings(self):
-        self.settings.getCacheDir.return_value = 'testCacheDir'
+        self.settings.cachePath = 'testCacheDir'
         self.profileCopier.copyFromHome(self.profile)
 
         homePath = os.path.normpath('/home/foo')

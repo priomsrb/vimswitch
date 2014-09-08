@@ -1,17 +1,11 @@
+import os
+
+
 class Settings:
-    def getDefaultProfile(self):
-        pass
 
-    def getCacheDir(self):
-        pass
-
-    def getHomeDir(self):
-        pass
-
-    def getProfileFiles(self):
-        """Returns a list of filenames that profiles could contain"""
-        pass
-
-    def getProfileDirs(self):
-        """Returns a list of directories that profiles could contain"""
-        pass
+    def __init__(self):
+        self.defaultProfile = 'default'
+        self.homePath = os.path.expanduser('~')
+        self.cachePath = os.path.join(self.homePath, '.vimswitch')
+        self.profileFiles = ['.vimrc', '_vimrc']
+        self.profileDirs = ['.vim', '_vim']

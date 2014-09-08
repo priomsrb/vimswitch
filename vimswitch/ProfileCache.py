@@ -12,7 +12,7 @@ class ProfileCache:
 
     def getLocation(self, profile):
         """Returns the path where profile is located"""
-        fullPath = os.path.join(self.settings.getCacheDir(), profile.getDirName())
+        fullPath = os.path.join(self.settings.cachePath, profile.getDirName())
         return os.path.normpath(fullPath)
 
     def createEmptyProfile(self, profile):

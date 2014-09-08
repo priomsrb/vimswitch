@@ -32,7 +32,7 @@ class TestProfileDataIo(unittest.TestCase):
     def test_delete_usesGetProfileFiles_fromSettings(self):
         profilePath = os.path.normpath('/home/foo')
         self.diskIo.fileExists.return_value = True
-        self.settings.getProfileFiles.return_value = ['testProfileFile']
+        self.settings.profileFiles = ['testProfileFile']
 
         self.profileDataIo.delete(profilePath)
 
@@ -41,7 +41,7 @@ class TestProfileDataIo(unittest.TestCase):
     def test_delete_deletesMultipleFiles(self):
         profilePath = os.path.normpath('/home/foo')
         self.diskIo.fileExists.return_value = True
-        self.settings.getProfileFiles.return_value = ['file1', 'file2']
+        self.settings.profileFiles = ['file1', 'file2']
 
         self.profileDataIo.delete(profilePath)
 
@@ -69,7 +69,7 @@ class TestProfileDataIo(unittest.TestCase):
     def test_delete_usesGetProfileDirs_fromSettings(self):
         profilePath = os.path.normpath('/home/foo')
         self.diskIo.dirExists.return_value = True
-        self.settings.getProfileDirs.return_value = ['testProfileDir']
+        self.settings.profileDirs = ['testProfileDir']
 
         self.profileDataIo.delete(profilePath)
 
@@ -78,7 +78,7 @@ class TestProfileDataIo(unittest.TestCase):
     def test_delete_deletesMultipleDirs(self):
         profilePath = os.path.normpath('/home/foo')
         self.diskIo.dirExists.return_value = True
-        self.settings.getProfileDirs.return_value = ['dir1', 'dir2']
+        self.settings.profileDirs = ['dir1', 'dir2']
 
         self.profileDataIo.delete(profilePath)
 
@@ -88,8 +88,8 @@ class TestProfileDataIo(unittest.TestCase):
     def test_delete_deletesFilesAndDirs(self):
         profilePath = os.path.normpath('/home/foo')
         self.diskIo.dirExists.return_value = True
-        self.settings.getProfileFiles.return_value = ['file1', 'file2']
-        self.settings.getProfileDirs.return_value = ['dir1', 'dir2']
+        self.settings.profileFiles = ['file1', 'file2']
+        self.settings.profileDirs = ['dir1', 'dir2']
 
         self.profileDataIo.delete(profilePath)
 
@@ -126,7 +126,7 @@ class TestProfileDataIo(unittest.TestCase):
         srcPath = os.path.normpath('/home/foo/.vimswitch/test.vimrc')
         destPath = os.path.normpath('/home/foo')
         self.diskIo.fileExists.return_value = True
-        self.settings.getProfileFiles.return_value = ['testProfileFile']
+        self.settings.profileFiles = ['testProfileFile']
 
         self.profileDataIo.copy(srcPath, destPath)
 
@@ -138,7 +138,7 @@ class TestProfileDataIo(unittest.TestCase):
         srcPath = os.path.normpath('/home/foo/.vimswitch/test.vimrc')
         destPath = os.path.normpath('/home/foo')
         self.diskIo.fileExists.return_value = True
-        self.settings.getProfileFiles.return_value = ['file1', 'file2']
+        self.settings.profileFiles = ['file1', 'file2']
 
         self.profileDataIo.copy(srcPath, destPath)
 
@@ -177,7 +177,7 @@ class TestProfileDataIo(unittest.TestCase):
         srcPath = os.path.normpath('/home/foo/.vimswitch/test.vimrc')
         destPath = os.path.normpath('/home/foo')
         self.diskIo.dirExists.return_value = True
-        self.settings.getProfileDirs.return_value = ['testProfileDir']
+        self.settings.profileDirs = ['testProfileDir']
 
         self.profileDataIo.copy(srcPath, destPath)
 
@@ -189,7 +189,7 @@ class TestProfileDataIo(unittest.TestCase):
         srcPath = os.path.normpath('/home/foo/.vimswitch/test.vimrc')
         destPath = os.path.normpath('/home/foo')
         self.diskIo.dirExists.return_value = True
-        self.settings.getProfileDirs.return_value = ['dir1', 'dir2']
+        self.settings.profileDirs = ['dir1', 'dir2']
 
         self.profileDataIo.copy(srcPath, destPath)
 
@@ -204,8 +204,8 @@ class TestProfileDataIo(unittest.TestCase):
         srcPath = os.path.normpath('/home/foo/.vimswitch/test.vimrc')
         destPath = os.path.normpath('/home/foo')
         self.diskIo.dirExists.return_value = True
-        self.settings.getProfileFiles.return_value = ['file1', 'file2']
-        self.settings.getProfileDirs.return_value = ['dir1', 'dir2']
+        self.settings.profileFiles = ['file1', 'file2']
+        self.settings.profileDirs = ['dir1', 'dir2']
 
         self.profileDataIo.copy(srcPath, destPath)
 

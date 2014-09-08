@@ -7,10 +7,10 @@ from vimswitch.ProfileDataIo import ProfileDataIo
 
 def SettingsStub():
     settings = MagicMock(Settings)
-    settings.getProfileFiles.return_value = ['.vimrc', '_vimrc']
-    settings.getProfileDirs.return_value = ['.vim', '_vim']
-    settings.getHomeDir.return_value = os.path.normpath('/home/foo')
-    settings.getCacheDir.return_value = os.path.normpath('/home/foo/.vimswitch')
+    settings.profileFiles = ['.vimrc', '_vimrc']
+    settings.profileDirs = ['.vim', '_vim']
+    settings.homePath = os.path.normpath('/home/foo')
+    settings.cachePath = os.path.normpath('/home/foo/.vimswitch')
     return settings
 
 

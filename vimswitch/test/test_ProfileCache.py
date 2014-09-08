@@ -34,7 +34,7 @@ class TestProfileCache(unittest.TestCase):
     # ProfileCache.getLocation
 
     def test_getLocation(self):
-        self.settings.getCacheDir.return_value = '/foo/bar/cache'
+        self.settings.cachePath = '/foo/bar/cache'
         profile = Profile('test/vimrc')
         result = self.profileCache.getLocation(profile)
         self.assertEquals(result, os.path.normpath('/foo/bar/cache/test.vimrc'))
@@ -42,7 +42,7 @@ class TestProfileCache(unittest.TestCase):
     # ProfileCache.createEmptyProfile
 
     def test_createEmptyProfile_profileDoesNotExist_createsProfileDir(self):
-        self.settings.getCacheDir.return_value = '/foo/bar/cache'
+        self.settings.cachePath = '/foo/bar/cache'
         profile = Profile('default')
         self.profileCache.createEmptyProfile(profile)
         self.diskIo.createDir.assert_called_with(os.path.normpath('/foo/bar/cache/default'))
