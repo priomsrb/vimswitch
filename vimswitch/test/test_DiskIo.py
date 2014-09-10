@@ -103,6 +103,63 @@ class TestDiskIo(FileSystemTestCase):
 
         self.assertRaises(IOError, self.diskIo.copyFile, filePath, copiedFilePath)
 
+    # DiskIo.move
+
+    def test_move_movesFile(self):
+        filePath = self.getTestPath('file1.txt')
+        movedFilePath = self.getTestPath('moved_file1.txt')
+        self.diskIo.createFile(filePath, 'test data')
+
+        self.diskIo.move(filePath, movedFilePath)
+
+        self.assertFalse(self.diskIo.fileExists(filePath))
+        actual = self.diskIo.getFileContents(movedFilePath)
+        expected = 'test data'
+        self.assertEqual(actual, expected)
+
+    def test_move_overwritesExisting(self):
+        filePath = self.getTestPath('file1.txt')
+        existingFilePath = self.getTestPath('existing.txt')
+        self.diskIo.createFile(filePath, 'test data')
+        self.diskIo.createFile(existingFilePath, 'existing data')
+
+        self.diskIo.move(filePath, existingFilePath)
+
+        self.assertFalse(self.diskIo.fileExists(filePath))
+        actual = self.diskIo.getFileContents(existingFilePath)
+        expected = 'test data'
+        self.assertEqual(actual, expected)
+
+    def test_move_movesIntoExistingDir(self):
+        filePath = self.getTestPath('file1.txt')
+        existingDir = self.getTestPath('existing')
+        movedFilePath = self.getTestPath('existing/file1.txt')
+        self.diskIo.createFile(filePath, 'test data')
+        self.diskIo.createDir(existingDir)
+
+        self.diskIo.move(filePath, movedFilePath)
+
+        self.assertFalse(self.diskIo.fileExists(filePath))
+        actual = self.diskIo.getFileContents(movedFilePath)
+        expected = 'test data'
+        self.assertEqual(actual, expected)
+
+    def test_move_intoNonExistingDir_raisesError(self):
+        filePath = self.getTestPath('file1.txt')
+        movedFilePath = self.getTestPath('non_existing/file1.txt')
+        self.diskIo.createFile(filePath, 'test data')
+
+        self.assertRaises(IOError, self.diskIo.move, filePath, movedFilePath)
+
+    def test_move_intoItself_doesNothing(self):
+        filePath = self.getTestPath('file1.txt')
+        self.diskIo.createFile(filePath, 'test data')
+
+        self.diskIo.move(filePath, filePath)
+        actual = self.diskIo.getFileContents(filePath)
+        expected = 'test data'
+        self.assertEqual(actual, expected)
+
     # DiskIo.deleteFile
 
     def test_deleteFile_deletesFile(self):

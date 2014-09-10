@@ -13,14 +13,24 @@ class FileSystemTestCase(unittest.TestCase):
         self.clearWorkingDirectory()
         self.tearDownSafeOperations()
 
+    @classmethod
     def getMyDir(self):
         return os.path.dirname(__file__)
 
+    @classmethod
     def getTestPath(self, path):
         "Returns path prepended by the working directory"
         fullPath = os.path.join(self.getWorkingDir(), path)
         return os.path.normpath(fullPath)
 
+    @classmethod
+    def getDataPath(self, path):
+        "Returns path prepended by the test data directory"
+        dataDir = 'data'
+        fullPath = os.path.join(self.getMyDir(), dataDir, path)
+        return os.path.normpath(fullPath)
+
+    @classmethod
     def getWorkingDir(self):
         """"Returns the path to a directory where we can safely create files and
         directories during tests"""
@@ -42,6 +52,7 @@ class FileSystemTestCase(unittest.TestCase):
         self.real_os_path_isfile = os.path.isfile
         self.real_os_path_isdir = os.path.isdir
         self.real_shutil_copy = shutil.copy
+        self.real_shutil_move = shutil.move
         self.real_shutil_copytree = shutil.copytree
         self.real_shutil_rmtree = shutil.rmtree
 
@@ -49,6 +60,7 @@ class FileSystemTestCase(unittest.TestCase):
         os.mkdir = self.safe_os_mkdir
         os.remove = self.safe_os_remove
         shutil.copy = self.safe_shutil_copy
+        shutil.move = self.safe_shutil_move
         shutil.copytree = self.safe_shutil_copytree
         shutil.rmtree = self.safe_shutil_rmtree
 
@@ -57,6 +69,7 @@ class FileSystemTestCase(unittest.TestCase):
         os.mkdir = self.real_os_mkdir
         os.remove = self.real_os_remove
         shutil.copy = self.real_shutil_copy
+        shutil.move = self.real_shutil_move
         shutil.copytree = self.real_shutil_copytree
         shutil.rmtree = self.real_shutil_rmtree
 
@@ -80,6 +93,11 @@ class FileSystemTestCase(unittest.TestCase):
         self.verifyPath(src)
         self.verifyPath(dst)
         self.real_shutil_copy(src, dst)
+
+    def safe_shutil_move(self, src, dst):
+        self.verifyPath(src)
+        self.verifyPath(dst)
+        self.real_shutil_move(src, dst)
 
     def safe_shutil_copytree(self, src, dst, symlinks=False, ignore=None):
         self.verifyPath(src)

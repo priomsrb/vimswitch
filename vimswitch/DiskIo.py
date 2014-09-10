@@ -15,6 +15,9 @@ class DiskIo:
     def copyFile(self, srcPath, destPath):
         shutil.copy(srcPath, destPath)
 
+    def move(self, srcPath, destPath):
+        shutil.move(srcPath, destPath)
+
     def deleteFile(self, filePath):
         os.remove(filePath)
 
