@@ -51,6 +51,17 @@ class TestFileDownloader(FileSystemTestCase):
 
         self.assertTrue(self.diskIo.fileExists(downloadPath))
 
+    def test_download_fileAlreadyExists_overwritesFile(self):
+        url = self.getLocalUrl('simple.txt')
+        downloadPath = self.getTestPath('simple_downloaded.txt')
+        self.diskIo.createFile(downloadPath, 'previous data')
+
+        self.fileDownloader.download(url, downloadPath)
+
+        actual = self.diskIo.getFileContents(downloadPath)
+        expected = 'test data'
+        self.assertEqual(actual, expected)
+
     def test_download_nonExistantUrl_raisesError(self):
         nonExistantUrl = self.getLocalUrl('non_existant.txt')
         downloadDir = self.getTestPath('')

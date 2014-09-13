@@ -90,7 +90,7 @@ class FileSystemTestCase(unittest.TestCase):
         self.real_os_remove(path)
 
     def safe_shutil_copy(self, src, dst):
-        self.verifyPath(src)
+        # Only need to verify destination path since src will not be modified
         self.verifyPath(dst)
         self.real_shutil_copy(src, dst)
 

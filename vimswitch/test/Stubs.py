@@ -22,3 +22,13 @@ def DiskIoStub():
 def ProfileDataIoStub():
     profileDataIo = MagicMock(ProfileDataIo)
     return profileDataIo
+
+
+def SettingsWorkingDirStub(workingDir):
+    "Returns a Settings stub that treats `workingDir` as the home directory"
+    settings = Settings()
+    settings.homePath = workingDir
+    settings.configPath = os.path.join(settings.homePath, '.vimswitch')
+    settings.cachePath = settings.configPath
+    settings.downloadsPath = os.path.join(settings.cachePath, '.downloads')
+    return settings

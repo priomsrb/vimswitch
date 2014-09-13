@@ -221,6 +221,3 @@ class TestProfileDataIo(unittest.TestCase):
         self.diskIo.copyFile.assert_any_call(srcFile2, destFile2)
         self.diskIo.copyDir.assert_any_call(srcDir1, destDir1)
         self.diskIo.copyDir.assert_any_call(srcDir2, destDir2)
-
-    # TODO: Add tests for passing in a string instead of a Path
-    # Should give an assertion/typeError

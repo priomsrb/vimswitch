@@ -10,6 +10,10 @@ class ProfileCache:
         profileLocation = self.getLocation(profile)
         return self.diskIo.dirExists(profileLocation)
 
+    def delete(self, profile):
+        profileDirPath = self.getLocation(profile)
+        self.diskIo.deleteDir(profileDirPath)
+
     def getLocation(self, profile):
         """Returns the path where profile is located"""
         fullPath = os.path.join(self.settings.cachePath, profile.getDirName())

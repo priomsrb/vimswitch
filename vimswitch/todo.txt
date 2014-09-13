@@ -1,12 +1,11 @@
 On back:
-- Commit the FileDownloader changes
 
 Todo:
-- Make TestFileDownloader throw error on 404's [http://stackoverflow.com/questions/1308542/how-to-catch-404-error-in-urllib-urlretrieve]
+- Make TestProfileCache into a FileSystemTestCase
+- Maybe move getProfileUrl to be a method of Profile
 - Use os.path.commonprefix([requested_path, startdir]) instead of string.startswith
 - Find out how to prevent path traversal by using os.path.relpath
-- Move TestFileDownloader into a new test suite: 'slow'
-- Move the DiskIo tests into an integration test suite
+? Move the DiskIo tests into an integration test suite
 - Get some naming consistency:
     # Use 'path' instead of filename or dir
     - Some tests contain 'when' some don't. Make it consistent
@@ -20,3 +19,6 @@ Done:
 - Rename the settings functions to plain variables instead of getters
 - Write tests for TestFileDownloader
 - Make test for exception when FileDownloader is given a 404 URL
+- Make TestFileDownloader throw error on 404's [http://stackoverflow.com/questions/1308542/how-to-catch-404-error-in-urllib-urlretrieve]
+- Move TestFileDownloader into a new test suite: 'slow'
+- Commit the FileDownloader changes

@@ -31,6 +31,12 @@ class TestProfileCache(unittest.TestCase):
         self.profileCache.contains(self.testProfile)
         self.assertTrue(self.profileCache.getLocation.called)
 
+    # ProfileCache.delete
+
+    def test_delete_deletesProfile(self):
+        # TODO: Write test. Would be easier if this was a filesystem test
+        pass
+
     # ProfileCache.getLocation
 
     def test_getLocation(self):
