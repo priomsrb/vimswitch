@@ -15,8 +15,7 @@ class TestProfileRetriever(FileSystemTestCase):
         self.diskIo = DiskIo()
 
         self.settings = SettingsWorkingDirStub(self.getWorkingDir())
-        self.diskIo.createDir(self.settings.configPath)
-        self.diskIo.createDir(self.settings.downloadsPath)
+        self.diskIo.createDirWithParents(self.settings.downloadsPath)
 
         fileDownloader = MagicMock(FileDownloader)
         fileDownloader.download = MagicMock(side_effect=self.fake_download)

@@ -221,6 +221,32 @@ class TestDiskIo(FileSystemTestCase):
         self.diskIo.createDir(dirPath)
         self.assertRaises(OSError, self.diskIo.createDir, dirPath)
 
+    # DiskIo.createDirWithParents
+
+    def test_createDirWithParents_createsDir(self):
+        dirPath = self.getTestPath('dir1')
+        self.diskIo.createDirWithParents(dirPath)
+        self.assertTrue(self.diskIo.dirExists(dirPath))
+
+    def test_createDirWithParents_withParent_createsDir(self):
+        parentDirPath = self.getTestPath('parent')
+        childDirPath = self.getTestPath('parent/child')
+
+        self.diskIo.createDirWithParents(parentDirPath)
+        self.diskIo.createDirWithParents(childDirPath)
+
+        self.assertTrue(self.diskIo.dirExists(childDirPath))
+
+    def test_createDirWithParents_withoutParent_createsDir(self):
+        childDirPath = self.getTestPath('parent/child')
+        self.diskIo.createDirWithParents(childDirPath)
+        self.assertTrue(self.diskIo.dirExists(childDirPath))
+
+    def test_createDirWithParents_dirAlreadyExists_raisesError(self):
+        dirPath = self.getTestPath('dir1')
+        self.diskIo.createDirWithParents(dirPath)
+        self.assertRaises(OSError, self.diskIo.createDirWithParents, dirPath)
+
     # DiskIo.copyDir
 
     def test_copyDir_copiesEmptyDir(self):

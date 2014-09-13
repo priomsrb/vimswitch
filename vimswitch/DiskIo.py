@@ -27,6 +27,9 @@ class DiskIo:
     def createDir(self, dirPath):
         return os.mkdir(dirPath)
 
+    def createDirWithParents(self, dirPath):
+        return os.makedirs(dirPath)
+
     def copyDir(self, srcPath, destPath):
         """
         Recursively copies the src directory to a new dest directory. Creates

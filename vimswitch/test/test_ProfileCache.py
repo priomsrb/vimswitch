@@ -12,7 +12,7 @@ class TestProfileCache(FileSystemTestCase):
         FileSystemTestCase.setUp(self)
         self.diskIo = DiskIo()
         self.settings = Stubs.SettingsWorkingDirStub(self.getWorkingDir())
-        self.diskIo.createDir(self.settings.cachePath)
+        self.diskIo.createDirWithParents(self.settings.cachePath)
         self.profileCache = ProfileCache(self.settings, self.diskIo)
         self.testProfile = Profile('test/vimrc')
 
