@@ -1,41 +1,46 @@
-import unittest
-import Stubs
 import os
-from mock import MagicMock
+import Stubs
+from vimswitch.DiskIo import DiskIo
 from vimswitch.ProfileCache import ProfileCache
 from vimswitch.Profile import Profile
+from FileSystemTestCase import FileSystemTestCase
 
 
-class TestProfileCache(unittest.TestCase):
+class TestProfileCache(FileSystemTestCase):
 
     def setUp(self):
-        self.settings = Stubs.SettingsStub()
-        self.diskIo = Stubs.DiskIoStub()
+        FileSystemTestCase.setUp(self)
+        self.diskIo = DiskIo()
+        self.settings = Stubs.SettingsWorkingDirStub(self.getWorkingDir())
+        self.diskIo.createDir(self.settings.cachePath)
         self.profileCache = ProfileCache(self.settings, self.diskIo)
         self.testProfile = Profile('test/vimrc')
 
     # ProfileCache.contains
 
     def test_contains_whenDirExists_returnsTrue(self):
-        self.diskIo.dirExists.return_value = True
+        profileDir = self.getTestPath('.vimswitch/test.vimrc')
+        self.diskIo.createDir(profileDir)
+
         result = self.profileCache.contains(self.testProfile)
+
         self.assertTrue(result)
 
     def test_contains_whenDirDoesNotExist_returnsFalse(self):
-        self.diskIo.dirExists.return_value = False
         result = self.profileCache.contains(self.testProfile)
         self.assertFalse(result)
-
-    def test_contains_usesGetLocation(self):
-        self.profileCache.getLocation = MagicMock()
-        self.profileCache.contains(self.testProfile)
-        self.assertTrue(self.profileCache.getLocation.called)
 
     # ProfileCache.delete
 
     def test_delete_deletesProfile(self):
-        # TODO: Write test. Would be easier if this was a filesystem test
-        pass
+        profileDir = self.getTestPath('.vimswitch/test.vimrc')
+        vimrcFilePath = self.getTestPath('.vimswitch/test.vimrc/.vimrc')
+        self.diskIo.createDir(profileDir)
+        self.diskIo.createFile(vimrcFilePath, 'test data')
+
+        self.profileCache.delete(self.testProfile)
+
+        self.assertFalse(self.profileCache.contains(self.testProfile))
 
     # ProfileCache.getLocation
 
@@ -48,7 +53,9 @@ class TestProfileCache(unittest.TestCase):
     # ProfileCache.createEmptyProfile
 
     def test_createEmptyProfile_profileDoesNotExist_createsProfileDir(self):
-        self.settings.cachePath = '/foo/bar/cache'
         profile = Profile('default')
+
         self.profileCache.createEmptyProfile(profile)
-        self.diskIo.createDir.assert_called_with(os.path.normpath('/foo/bar/cache/default'))
+
+        profileDir = self.getTestPath('.vimswitch/default')
+        self.assertTrue(self.diskIo.dirExists(profileDir))
