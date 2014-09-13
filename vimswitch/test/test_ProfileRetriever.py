@@ -24,9 +24,6 @@ class TestProfileRetriever(FileSystemTestCase):
 
         self.profileRetriever = ProfileRetriever(self.settings, fileDownloader, profileCache, self.diskIo)
 
-    def tearDown(self):
-        FileSystemTestCase.tearDown(self)
-
     def test_retrieve_retrievesProfile(self):
         profile = Profile('test/vimrc')
 

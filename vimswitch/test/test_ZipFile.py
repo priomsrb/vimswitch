@@ -5,11 +5,8 @@ from zipfile import ZipFile
 
 class TestZipFile(FileSystemTestCase):
     def setUp(self):
-        super(TestZipFile, self).setUp()
+        FileSystemTestCase.setUp(self)
         self.diskIo = DiskIo()
-
-    def tearDown(self):
-        super(TestZipFile, self).tearDown()
 
     def test_extract_extractsFile(self):
         zipPath = self.getDataPath('simple.zip')

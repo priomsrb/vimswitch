@@ -4,11 +4,8 @@ from vimswitch.DiskIo import DiskIo
 
 class TestDiskIo(FileSystemTestCase):
     def setUp(self):
-        super(TestDiskIo, self).setUp()
+        FileSystemTestCase.setUp(self)
         self.diskIo = DiskIo()
-
-    def tearDown(self):
-        super(TestDiskIo, self).tearDown()
 
     # DiskIo.createFile
 

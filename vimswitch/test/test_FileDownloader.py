@@ -21,14 +21,11 @@ class TestFileDownloader(FileSystemTestCase):
         cls.server.stop()
 
     def setUp(self):
-        super(TestFileDownloader, self).setUp()
+        FileSystemTestCase.setUp(self)
         settings = Settings()
         settings.downloadsPath = self.getTestPath('')
         self.diskIo = DiskIo()
         self.fileDownloader = FileDownloader(settings, self.diskIo)
-
-    def tearDown(self):
-        super(TestFileDownloader, self).tearDown()
 
     # FileDownloader.download
 
