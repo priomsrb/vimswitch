@@ -47,3 +47,11 @@ class DiskIo:
 
     def anyExists(self, path):
         return self.fileExists(path) or self.dirExists(path)
+
+
+def getDiskIo(app):
+    return app.get('diskIo', createDiskIo(app))
+
+
+def createDiskIo(app):
+    return DiskIo()

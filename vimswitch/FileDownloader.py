@@ -5,6 +5,8 @@ import datetime
 from mimetools import Message
 from StringIO import StringIO
 from urlparse import urlparse
+from Settings import getSettings
+from DiskIo import getDiskIo
 
 
 class FileDownloader:
@@ -30,6 +32,7 @@ class FileDownloader:
             if filename != '':
                 filePath = os.path.join(path, os.path.basename(filename))
             else:
+                # TODO: shouldn't filePath be inside path?
                 filePath = temporaryFilePath
         else:
             # If we are saving to a file, just use that filename
@@ -72,3 +75,14 @@ class FileDownloader:
         def http_error_default(self, url, fp, errcode, errmsg, headers):
             errorMessage = 'Error when accessing %s: %s %s' % (url, errcode, errmsg)
             raise IOError(errorMessage)
+
+
+def getFileDownloader(app):
+    return app.get('fileDownloader', createFileDownloader(app))
+
+
+def createFileDownloader(app):
+    settings = getSettings(app)
+    diskIo = getDiskIo(app)
+    fileDownloader = FileDownloader(settings, diskIo)
+    return fileDownloader

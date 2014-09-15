@@ -1,4 +1,6 @@
 import os
+from Settings import getSettings
+from DiskIo import getDiskIo
 
 
 class ProfileCache:
@@ -22,3 +24,14 @@ class ProfileCache:
     def createEmptyProfile(self, profile):
         location = self.getLocation(profile)
         self.diskIo.createDir(location)
+
+
+def getProfileCache(app):
+    return app.get('profileCache', createProfileCache(app))
+
+
+def createProfileCache(app):
+    settings = getSettings(app)
+    diskIo = getDiskIo(app)
+    profileCache = ProfileCache(settings, diskIo)
+    return profileCache

@@ -1,6 +1,10 @@
 import os
 from zipfile import ZipFile
 from ProfileUrlResolver import getProfileUrl
+from Settings import getSettings
+from FileDownloader import getFileDownloader
+from ProfileCache import getProfileCache
+from DiskIo import getDiskIo
 
 
 class ProfileRetriever:
@@ -22,3 +26,16 @@ class ProfileRetriever:
 
         profileDir = self.profileCache.getLocation(profile)
         self.diskIo.move(extractionDir, profileDir)
+
+
+def getProfileRetriever(app):
+    return app.get('profileRetriever', createProfileRetriever(app))
+
+
+def createProfileRetriever(app):
+    settings = getSettings(app)
+    fileDownloader = getFileDownloader(app)
+    profileCache = getProfileCache(app)
+    diskIo = getDiskIo(app)
+    profileRetriever = ProfileRetriever(settings, fileDownloader, profileCache, diskIo)
+    return profileRetriever

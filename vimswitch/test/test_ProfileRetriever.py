@@ -1,12 +1,10 @@
-import os
 from FileSystemTestCase import FileSystemTestCase
-from mock import MagicMock
 from vimswitch.DiskIo import DiskIo
-from vimswitch.FileDownloader import FileDownloader
 from vimswitch.Profile import Profile
 from vimswitch.ProfileCache import ProfileCache
 from vimswitch.ProfileRetriever import ProfileRetriever
 from Stubs import SettingsWorkingDirStub
+from FakeFileDownloader import FakeFileDownloader
 
 
 class TestProfileRetriever(FileSystemTestCase):
@@ -17,8 +15,7 @@ class TestProfileRetriever(FileSystemTestCase):
         self.settings = SettingsWorkingDirStub(self.getWorkingDir())
         self.diskIo.createDirWithParents(self.settings.downloadsPath)
 
-        fileDownloader = MagicMock(FileDownloader)
-        fileDownloader.download = MagicMock(side_effect=self.fake_download)
+        fileDownloader = FakeFileDownloader(self.getDataPath('fake_internet'), self.diskIo)
 
         profileCache = ProfileCache(self.settings, self.diskIo)
 
@@ -55,15 +52,3 @@ class TestProfileRetriever(FileSystemTestCase):
         profile = Profile('non_existant/vimrc')
 
         self.assertRaises(IOError, self.profileRetriever.retrieve, profile)
-
-    # Helpers
-
-    def fake_download(self, url, path):
-        if url == 'https://github.com/test/vimrc/archive/master.zip':
-            filePath = self.getDataPath('vimrc_master.zip')
-            self.diskIo.copyFile(filePath, path)
-            baseName = os.path.basename(filePath)
-            copiedFilePath = os.path.join(path, baseName)
-            return copiedFilePath
-        else:
-            raise IOError('Cannot download from ' + url)

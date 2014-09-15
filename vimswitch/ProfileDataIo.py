@@ -1,4 +1,6 @@
 import os
+from Settings import getSettings
+from DiskIo import getDiskIo
 
 
 class ProfileDataIo:
@@ -34,3 +36,14 @@ class ProfileDataIo:
             destDirPath = os.path.join(destPath, dir)
             if self.diskIo.dirExists(srcDirPath):
                 self.diskIo.copyDir(srcDirPath, destDirPath)
+
+
+def getProfileDataIo(app):
+    return app.get('profileDataIo', createProfileDataIo(app))
+
+
+def createProfileDataIo(app):
+    settings = getSettings(app)
+    diskIo = getDiskIo(app)
+    profileDataIo = ProfileDataIo(settings, diskIo)
+    return profileDataIo

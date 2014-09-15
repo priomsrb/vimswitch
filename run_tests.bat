@@ -9,7 +9,9 @@ cls
 :: EXTERNAL = Runs only external test. These tests make use of resources
 ::   outside the local machine. For example downloading a file from github. 
 ::   Avoid running these tests frequently; we want to be nice to others :)
+:: COVERAGE = Checks the test coverage after running ALL tests
 set TEST_TYPE=BASIC
+
 echo %TEST_TYPE% TESTS
 
 if "%TEST_TYPE%"=="BASIC" (
@@ -20,6 +22,9 @@ nosetests --nocapture -a "!external"
 )
 if "%TEST_TYPE%"=="EXTERNAL" (
 nosetests --nocapture -a "external"
+)
+ if "%TEST_TYPE%"=="COVERAGE" (
+nosetests --nocapture -a "!external" --with-coverage --cover-package=vimswitch --cover-branches
 )
 
 pause

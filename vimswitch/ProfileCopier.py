@@ -1,3 +1,8 @@
+from Settings import getSettings
+from ProfileCache import getProfileCache
+from ProfileDataIo import getProfileDataIo
+
+
 class ProfileCopier:
     def __init__(self, settings, profileCache, profileDataIo):
         self.settings = settings
@@ -27,3 +32,15 @@ class ProfileCopier:
         homePath = self.settings.homePath
         self.profileDataIo.delete(profilePath)
         self.profileDataIo.copy(homePath, profilePath)
+
+
+def getProfileCopier(app):
+    return app.get('profileCopier', createProfileCopier(app))
+
+
+def createProfileCopier(app):
+    settings = getSettings(app)
+    profileCache = getProfileCache(app)
+    profileDataIo = getProfileDataIo(app)
+    profileCopier = ProfileCopier(settings, profileCache, profileDataIo)
+    return profileCopier
