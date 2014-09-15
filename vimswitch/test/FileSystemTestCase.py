@@ -48,6 +48,7 @@ class FileSystemTestCase(unittest.TestCase):
     def setUpSafeOperations(self):
         self.real_builtin_open = __builtin__.open
         self.real_os_mkdir = os.mkdir
+        self.real_os_makedirs = os.makedirs
         self.real_os_remove = os.remove
         self.real_os_path_isfile = os.path.isfile
         self.real_os_path_isdir = os.path.isdir
@@ -58,6 +59,7 @@ class FileSystemTestCase(unittest.TestCase):
 
         __builtin__.open = self.safe_builtin_open
         os.mkdir = self.safe_os_mkdir
+        os.makedirs = self.safe_os_makedirs
         os.remove = self.safe_os_remove
         shutil.copy = self.safe_shutil_copy
         shutil.move = self.safe_shutil_move
@@ -67,6 +69,7 @@ class FileSystemTestCase(unittest.TestCase):
     def tearDownSafeOperations(self):
         __builtin__.open = self.real_builtin_open
         os.mkdir = self.real_os_mkdir
+        os.makedirs = self.real_os_makedirs
         os.remove = self.real_os_remove
         shutil.copy = self.real_shutil_copy
         shutil.move = self.real_shutil_move
@@ -84,6 +87,10 @@ class FileSystemTestCase(unittest.TestCase):
     def safe_os_mkdir(self, path, mode=0777):
         self.verifyPath(path)
         self.real_os_mkdir(path, mode)
+
+    def safe_os_makedirs(self, path, mode=0777):
+        self.verifyPath(path)
+        self.real_os_makedirs(path, mode)
 
     def safe_os_remove(self, path):
         self.verifyPath(path)
