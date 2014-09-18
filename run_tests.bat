@@ -15,16 +15,17 @@ set TEST_TYPE=BASIC
 echo %TEST_TYPE% TESTS
 
 if "%TEST_TYPE%"=="BASIC" (
-nosetests --nocapture -a "!slow,!external"
+:: Add --nocapture to show stdout
+nosetests -a "!slow,!external"
 )
 if "%TEST_TYPE%"=="ALL" (
-nosetests --nocapture -a "!external"
+nosetests -a "!external"
 )
 if "%TEST_TYPE%"=="EXTERNAL" (
-nosetests --nocapture -a "external"
+nosetests -a "external"
 )
  if "%TEST_TYPE%"=="COVERAGE" (
-nosetests --nocapture -a "!external" --with-coverage --cover-package=vimswitch --cover-branches
+nosetests -a "!external" --with-coverage --cover-package=vimswitch --cover-branches
 )
 
 pause
