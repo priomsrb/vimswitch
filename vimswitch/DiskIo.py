@@ -45,6 +45,9 @@ class DiskIo:
     def dirExists(self, dirPath):
         return os.path.isdir(dirPath)
 
+    def isDirEmpty(self, dirPath):
+        return len(os.listdir(dirPath)) == 0
+
     def anyExists(self, path):
         return self.fileExists(path) or self.dirExists(path)
 

@@ -109,7 +109,7 @@ class TestDiskIo(FileSystemTestCase):
 
         self.diskIo.move(filePath, movedFilePath)
 
-        self.assertFalse(self.diskIo.fileExists(filePath))
+        self.assertFalse(self.diskIo.anyExists(filePath))
         actual = self.diskIo.getFileContents(movedFilePath)
         expected = 'test data'
         self.assertEqual(actual, expected)
@@ -122,7 +122,7 @@ class TestDiskIo(FileSystemTestCase):
 
         self.diskIo.move(filePath, existingFilePath)
 
-        self.assertFalse(self.diskIo.fileExists(filePath))
+        self.assertFalse(self.diskIo.anyExists(filePath))
         actual = self.diskIo.getFileContents(existingFilePath)
         expected = 'test data'
         self.assertEqual(actual, expected)
@@ -136,7 +136,7 @@ class TestDiskIo(FileSystemTestCase):
 
         self.diskIo.move(filePath, movedFilePath)
 
-        self.assertFalse(self.diskIo.fileExists(filePath))
+        self.assertFalse(self.diskIo.anyExists(filePath))
         actual = self.diskIo.getFileContents(movedFilePath)
         expected = 'test data'
         self.assertEqual(actual, expected)
@@ -165,7 +165,7 @@ class TestDiskIo(FileSystemTestCase):
 
         self.diskIo.deleteFile(filePath)
 
-        self.assertFalse(self.diskIo.dirExists(filePath))
+        self.assertFalse(self.diskIo.anyExists(filePath))
 
     def test_deleteFile_fileDoesNotExist_raisesError(self):
         filePath = self.getTestPath('file1.txt')
@@ -349,6 +349,33 @@ class TestDiskIo(FileSystemTestCase):
     def test_dirExists_parentDirDoesNotExist_returnsFalse(self):
         childDir = self.getTestPath('parentDir/childDir')
         self.assertFalse(self.diskIo.dirExists(childDir))
+
+    # DiskIo.isDirEmpty
+
+    def test_isDirEmpty_emptyDir_returnsTrue(self):
+        dirPath = self.getTestPath('empty')
+        self.diskIo.createDir(dirPath)
+
+        self.assertTrue(self.diskIo.isDirEmpty(dirPath))
+
+    def test_isDirEmpty_nonEmptyDir_returnsFalse(self):
+        dirPath = self.getTestPath('non_empty')
+        filePath = self.getTestPath('non_empty/file1.txt')
+        self.diskIo.createDir(dirPath)
+        self.diskIo.createFile(filePath, 'test data')
+
+        self.assertFalse(self.diskIo.isDirEmpty(dirPath))
+
+    def test_isDirEmpty_nonExistantDir_raisesError(self):
+        dirPath = self.getTestPath('non_existant')
+
+        self.assertRaises(OSError, self.diskIo.isDirEmpty, dirPath)
+
+    def test_isDirEmpty_onFile_raisesError(self):
+        filePath = self.getTestPath('file1.txt')
+        self.diskIo.createFile(filePath, 'test data')
+
+        self.assertRaises(OSError, self.diskIo.isDirEmpty, filePath)
 
     # DiskIo.anyExists
 
