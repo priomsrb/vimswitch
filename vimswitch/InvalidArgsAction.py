@@ -1,6 +1,6 @@
 class InvalidArgsAction():
     def execute(self):
         message = """
-Invalid Arguments. Use `vimswitch <profile>` to switch profiles.
+Invalid arguments. Use `vimswitch myuser/myrepo` to switch profiles.
 """
         print(message.strip())

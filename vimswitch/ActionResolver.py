@@ -8,6 +8,7 @@ class ActionResolver:
     def __init__(self, app, commandLineParser):
         self.app = app
         self.commandLineParser = commandLineParser
+        self.exitCode = 0
 
     def doActions(self):
         action = self.commandLineParser.action
@@ -18,6 +19,7 @@ class ActionResolver:
             ShortHelpAction().execute()
         else:
             InvalidArgsAction().execute()
+            self.exitCode = -1
 
 
 def getActionResolver(app):

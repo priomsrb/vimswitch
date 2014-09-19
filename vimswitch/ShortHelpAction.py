@@ -3,7 +3,7 @@ class ShortHelpAction():
         version = '0.1-alpha'
         message = """
 VimSwitch %s
-To switch to a profile type:
+To switch to a profile, type:
     vimswitch myuser/myrepo
 """ % (version)
         print(message.strip())

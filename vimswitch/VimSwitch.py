@@ -22,8 +22,8 @@ class VimSwitch:
             commandLineParser.parse(argv)
             actionResolver = getActionResolver(self.app)
             actionResolver.doActions()
-            return 0
+            return actionResolver.exitCode
         except Exception as e:
-            message = '%s: %s' % (e.__class__.__name__, e.message)
+            message = 'Error: %s' % e.message
             print(message)
             return -1

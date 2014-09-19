@@ -216,3 +216,27 @@ class TestVimSwitch(FileSystemTestCase):
         downloadedVimrcContents = diskIo.getFileContents(downloadedVimrcFilePath)
         self.assertEqual(downloadedVimrcContents, '" test vimrc data')
         self.assertTrue(diskIo.dirExists(downloadedVimDirPath))
+
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_noArguments_showsHelpMessage(self, stdout):
+        argv = ['./vimswitch']
+
+        exitCode = self.vimSwitch.run(argv)
+
+        self.assertEqual(exitCode, 0)
+        # Assert stdout
+        assertStdoutContains = partial(self.assertRegexpMatches, stdout.getvalue())
+        assertStdoutContains('VimSwitch .*')
+        assertStdoutContains('To switch to a profile, type:')
+        assertStdoutContains('    vimswitch myuser/myrepo')
+
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_tooManyArgs_showsErrorMessage(self, stdout):
+        argv = ['./vimswitch', 'test/vimrc', 'extra_argument']
+
+        exitCode = self.vimSwitch.run(argv)
+
+        self.assertEqual(exitCode, -1)
+        # Assert stdout
+        assertStdoutContains = partial(self.assertRegexpMatches, stdout.getvalue())
+        assertStdoutContains('Invalid arguments. Use `vimswitch myuser/myrepo` to switch profiles.')
