@@ -24,6 +24,6 @@ class VimSwitch:
             actionResolver.doActions()
             return actionResolver.exitCode
         except Exception as e:
-            message = 'Error: %s' % e.message
+            message = 'Error: %s' % str(e)
             print(message)
             return -1
