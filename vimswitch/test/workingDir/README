@@ -1,0 +1,7 @@
+This directory is used as a temporary working area for tests that work on
+files.
+
+Everything in this directory gets deleted before and after a test run.
+Including this file. But we still add this file to git because git refuses to
+add empty folders. So if you notice that this file is deleted in git, don't
+commit the deletion. Just ignore that this file was deleted.

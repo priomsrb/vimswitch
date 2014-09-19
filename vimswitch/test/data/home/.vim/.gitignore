@@ -1,0 +1,2 @@
+# Git cannot add empty directories. So this file is required to add the
+# current directory to git.

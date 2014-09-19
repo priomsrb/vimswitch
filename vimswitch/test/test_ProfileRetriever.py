@@ -1,10 +1,12 @@
+from FakeFileDownloader import FakeFileDownloader
 from FileSystemTestCase import FileSystemTestCase
+from StringIO import StringIO
+from Stubs import SettingsWorkingDirStub
+from mock import patch
 from vimswitch.DiskIo import DiskIo
 from vimswitch.Profile import Profile
 from vimswitch.ProfileCache import ProfileCache
 from vimswitch.ProfileRetriever import ProfileRetriever
-from Stubs import SettingsWorkingDirStub
-from FakeFileDownloader import FakeFileDownloader
 
 
 class TestProfileRetriever(FileSystemTestCase):
@@ -52,3 +54,12 @@ class TestProfileRetriever(FileSystemTestCase):
         profile = Profile('non_existant/vimrc')
 
         self.assertRaises(IOError, self.profileRetriever.retrieve, profile)
+
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_retrieve_prints(self, stdout):
+        profile = Profile('test/vimrc')
+
+        self.profileRetriever.retrieve(profile)
+
+        expectedOutput = 'Downloading profile from .*'
+        self.assertRegexpMatches(stdout.getvalue(), expectedOutput)

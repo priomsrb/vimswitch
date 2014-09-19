@@ -1,6 +1,13 @@
 On back:
 
 Todo:
+- Write VimSwitch tests for no args and invalid args.
+- Write test for __main__.py. Check that it returns an exit code
+- Create a Logger class. Use for logging exceptions
+- Do a grep for 'pass'. May be some incomplete methods
+- Create a ConfigFiles class with createConfigFiles
+- Create an end-to-end test for VimSwitch
+- Try using mock.patch for making operations safe in FileSystemTestCase
 - Use os.path.commonprefix([requested_path, startdir]) instead of string.startswith
 - Find out how to prevent path traversal by using os.path.relpath
 ? Move the DiskIo tests into an integration test suite
@@ -25,3 +32,6 @@ Done:
 - Commit the FileDownloader changes
 - Make os.makedirs safe in FileSystemTestCase
 - Make TestProfileCache into a FileSystemTestCase
+- Add actions for shortHelp
+- Create default settings files
+- Find a way for vimswitch/test/workingDir to be added to git. Otherwise generate it during tests. [Added a README file inside it]

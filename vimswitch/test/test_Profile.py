@@ -15,3 +15,15 @@ class TestProfile(unittest.TestCase):
         self.assertEquals(profile.getDirName(), 'repo')
         profile = Profile('prefix.repo')
         self.assertEquals(profile.getDirName(), 'prefix.repo')
+
+    def test_equal(self):
+        profile1 = Profile('user/repo')
+        profile2 = Profile('user/repo')
+
+        self.assertEqual(profile1, profile2)
+
+    def test_notEqual(self):
+        profile1 = Profile('user/repo1')
+        profile2 = Profile('user/repo2')
+
+        self.assertNotEqual(profile1, profile2)

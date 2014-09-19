@@ -1,7 +1,8 @@
 from FakeFileDownloader import createFakeFileDownloader
 from FileSystemTestCase import FileSystemTestCase
+from StringIO import StringIO
 from Stubs import SettingsWorkingDirStub
-from mock import MagicMock
+from mock import MagicMock, patch
 from vimswitch.Application import Application
 from vimswitch.Profile import Profile
 from vimswitch.SwitchProfileAction import getSwitchProfileAction
@@ -60,3 +61,10 @@ class TestSwitchProfileAction(FileSystemTestCase):
         self.assertEqual(expectedVimrc, actualVimrc)
         cachedVimDirPath = os.path.join(self.app.profileCache.getLocation(defaultProfile), '.vim')
         self.assertTrue(self.app.diskIo.dirExists(cachedVimDirPath))
+
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_switchToProfile_prints(self, stdout):
+        self.switchProfileAction.switchToProfile(self.profile)
+
+        expectedOutput = 'Switched to profile: test/vimrc'
+        self.assertRegexpMatches(stdout.getvalue(), expectedOutput)

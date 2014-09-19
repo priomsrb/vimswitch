@@ -37,6 +37,15 @@ class FileSystemTestCase(unittest.TestCase):
         dirName = 'workingDir'
         return os.path.join(self.getMyDir(), dirName)
 
+    def copyDataToWorkingDir(self, dataSrc, workingDirDest):
+        dataSrc = self.getDataPath(dataSrc)
+        workingDirDest = self.getTestPath(workingDirDest)
+        "Copies a file or dir from the data directory to the working directory"
+        if os.path.isdir(dataSrc):
+            shutil.copytree(dataSrc, workingDirDest)
+        else:
+            shutil.copy(dataSrc, workingDirDest)
+
     def clearWorkingDirectory(self):
         for entry in os.listdir(self.getWorkingDir()):
             fullPath = os.path.join(self.getWorkingDir(), entry)
@@ -107,7 +116,7 @@ class FileSystemTestCase(unittest.TestCase):
         self.real_shutil_move(src, dst)
 
     def safe_shutil_copytree(self, src, dst, symlinks=False, ignore=None):
-        self.verifyPath(src)
+        # Only need to verify destination path since src will not be modified
         self.verifyPath(dst)
         self.real_shutil_copytree(src, dst, symlinks, ignore)
 

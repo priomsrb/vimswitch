@@ -16,6 +16,7 @@ class ProfileRetriever:
 
     def retrieve(self, profile):
         url = getProfileUrl(profile)
+        print('Downloading profile from %s' % url)
         downloadsPath = self.settings.downloadsPath
         downloadedFilePath = self.fileDownloader.download(url, downloadsPath)
         extractionDir = os.path.splitext(downloadedFilePath)[0]

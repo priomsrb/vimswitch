@@ -16,6 +16,8 @@ class FakeFileDownloader:
         `download('https://github.com/test/vimrc/archive/master.zip', path)`
     will copy the file located at
         `$root/https.github.com.test.vimrc.archive/master.zip` to `path`
+
+    If the URL points to a non existant file it will raise an IOError.
     """
 
     def __init__(self, root, diskIo):
@@ -31,7 +33,12 @@ class FakeFileDownloader:
         else:
             destPath = path
 
-        self.diskIo.copyFile(sourcePath, destPath)
+        try:
+            self.diskIo.copyFile(sourcePath, destPath)
+        except IOError:
+            message = 'Error when accessing %s: 404 File not found' % url
+            raise IOError(message)
+
         return destPath
 
 
