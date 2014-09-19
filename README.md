@@ -15,3 +15,4 @@ VimSwitch just requires Python. So far only Python 2.7.5 has been tested.
 
 ## Roadmap
 - Make compatible with Python 3
+- Improve error messages
