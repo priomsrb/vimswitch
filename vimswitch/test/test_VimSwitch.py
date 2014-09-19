@@ -164,11 +164,15 @@ class TestVimSwitch(FileSystemTestCase):
             'test'
             'test.txt'
             '.test'
+            '.vimperatorrc'
+            '.viminfo'
+            '_viminfo'
         ]
         dirPaths = [
             'testDir'
             'testDir.txt'
             '.testDir'
+            '.vimperator'
         ]
         diskIo = self.app.diskIo
         for filePath in filePaths:
