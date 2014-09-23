@@ -1,7 +1,7 @@
 import unittest
-import Stubs
+from . import Stubs
 import os
-from TestHelpers import assertNoCall
+from .TestHelpers import assertNoCall
 from vimswitch.ProfileDataIo import ProfileDataIo
 
 

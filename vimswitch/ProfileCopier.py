@@ -1,6 +1,6 @@
-from Settings import getSettings
-from ProfileCache import getProfileCache
-from ProfileDataIo import getProfileDataIo
+from .Settings import getSettings
+from .ProfileCache import getProfileCache
+from .ProfileDataIo import getProfileDataIo
 
 
 class ProfileCopier:

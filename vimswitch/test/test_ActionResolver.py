@@ -3,7 +3,7 @@ from vimswitch.ActionResolver import ActionResolver
 from vimswitch.Application import Application
 from vimswitch.CommandLineParser import CommandLineParser
 from vimswitch.Profile import Profile
-from Stubs import DiskIoStub
+from .Stubs import DiskIoStub
 import unittest
 
 

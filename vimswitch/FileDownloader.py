@@ -1,12 +1,10 @@
 import os
 import re
-import urllib
+from .six.moves.urllib_parse import urlparse
+from .six.moves.urllib_request import FancyURLopener
 import datetime
-from mimetools import Message
-from StringIO import StringIO
-from urlparse import urlparse
-from Settings import getSettings
-from DiskIo import getDiskIo
+from .Settings import getSettings
+from .DiskIo import getDiskIo
 
 
 class FileDownloader:
@@ -51,13 +49,12 @@ class FileDownloader:
         """
         return datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
 
-    def _getDownloadFilename(self, url, headersString):
+    def _getDownloadFilename(self, url, headers):
         """
         Returns the filename of the download by first parsing the header and if
         unsuccessful, then parsing the url. If both fail, then returns an empty
         string.
         """
-        headers = Message(StringIO(headersString))
         if 'content-disposition' in headers:
             regex = 'attachment; filename=(.*)'
             contentDisposition = headers['content-disposition']
@@ -70,7 +67,7 @@ class FileDownloader:
         filename = os.path.basename(urlPath)
         return filename
 
-    class UrlOpener(urllib.FancyURLopener):
+    class UrlOpener(FancyURLopener):
         "A URLOpener that raises an error when there is a http error"
         def http_error_default(self, url, fp, errcode, errmsg, headers):
             errorMessage = 'Error when accessing %s: %s %s' % (url, errcode, errmsg)

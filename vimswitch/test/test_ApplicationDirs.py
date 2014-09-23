@@ -1,5 +1,5 @@
-from FileSystemTestCase import FileSystemTestCase
-from Stubs import SettingsWorkingDirStub
+from .FileSystemTestCase import FileSystemTestCase
+from .Stubs import SettingsWorkingDirStub
 from vimswitch.DiskIo import getDiskIo
 from vimswitch.ApplicationDirs import getApplicationDirs
 from vimswitch.Application import Application

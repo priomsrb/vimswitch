@@ -1,5 +1,5 @@
-from DiskIo import getDiskIo
-from Settings import getSettings
+from .DiskIo import getDiskIo
+from .Settings import getSettings
 
 
 class ApplicationDirs:

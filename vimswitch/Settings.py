@@ -1,5 +1,5 @@
 import os
-from Profile import Profile
+from .Profile import Profile
 
 
 class Settings:

@@ -1,7 +1,7 @@
-from InvalidArgsAction import InvalidArgsAction
-from ShortHelpAction import ShortHelpAction
-from SwitchProfileAction import createSwitchProfileAction
-from CommandLineParser import getCommandLineParser
+from .InvalidArgsAction import InvalidArgsAction
+from .ShortHelpAction import ShortHelpAction
+from .SwitchProfileAction import createSwitchProfileAction
+from .CommandLineParser import getCommandLineParser
 
 
 class ActionResolver:

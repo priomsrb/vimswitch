@@ -1,9 +1,9 @@
 import os
-import Stubs
+from . import Stubs
 from vimswitch.DiskIo import DiskIo
 from vimswitch.ProfileCache import ProfileCache
 from vimswitch.Profile import Profile
-from FileSystemTestCase import FileSystemTestCase
+from .FileSystemTestCase import FileSystemTestCase
 
 
 class TestProfileCache(FileSystemTestCase):

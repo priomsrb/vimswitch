@@ -1,4 +1,4 @@
-from VimSwitch import VimSwitch
+from .VimSwitch import VimSwitch
 import sys
 
 

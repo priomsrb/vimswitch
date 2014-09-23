@@ -1,10 +1,11 @@
-from FileSystemTestCase import FileSystemTestCase
-from SimpleServer import SimpleServer
+from .FileSystemTestCase import FileSystemTestCase
+from .SimpleServer import SimpleServer
 from vimswitch.DiskIo import DiskIo
 from vimswitch.FileDownloader import FileDownloader
 from vimswitch.Settings import Settings
 from mock import MagicMock
 from nose.plugins.attrib import attr
+from email.message import Message
 
 
 @attr('slow')
@@ -93,19 +94,20 @@ class TestFileDownloader(FileSystemTestCase):
 
     def test_getDownloadFilename_parsesUrl(self):
         url = 'http://example.com/foo/bar/file.txt?q=1'
-        headers = ''
+        headers = Message()
         filename = self.fileDownloader._getDownloadFilename(url, headers)
         self.assertEqual(filename, 'file.txt')
 
     def test_getDownloadFilename_parsesHeader(self):
         url = ''
-        headers = """Server: SimpleHTTP/0.6 Python/2.7.5
-Date: Tue, 09 Sep 2014 02:51:53 GMT
-Content-type: text/plain
-Content-Length: 9
-Last-Modified: Mon, 08 Sep 2014 23:53:51 GMT
-content-disposition: attachment; filename=file.txt
-"""
+        headers = Message()
+        headers['Server'] = 'SimpleHTTP/0.6 Python/2.7.5'
+        headers['Date'] = 'Tue, 09 Sep 2014 02:51:53 GMT'
+        headers['Content-type'] = 'text/plain'
+        headers['Content-Length'] = '9'
+        headers['Last-Modified'] = 'Mon, 08 Sep 2014 23:53:51 GMT'
+        # content-disposition should specify the filename
+        headers['content-disposition'] = 'attachment; filename=file.txt'
         filename = self.fileDownloader._getDownloadFilename(url, headers)
         self.assertEqual(filename, 'file.txt')
 

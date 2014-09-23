@@ -1,7 +1,7 @@
-from FakeFileDownloader import createFakeFileDownloader
-from FileSystemTestCase import FileSystemTestCase
-from StringIO import StringIO
-from Stubs import SettingsWorkingDirStub
+from .FakeFileDownloader import createFakeFileDownloader
+from .FileSystemTestCase import FileSystemTestCase
+from vimswitch.six import StringIO
+from .Stubs import SettingsWorkingDirStub
 from mock import MagicMock, patch
 from vimswitch.Application import Application
 from vimswitch.Profile import Profile

@@ -1,5 +1,5 @@
 import unittest
-import Stubs
+from . import Stubs
 import os
 from mock import MagicMock
 from vimswitch.Profile import Profile

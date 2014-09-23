@@ -1,7 +1,7 @@
 import unittest
 import os
 import shutil
-import __builtin__
+import vimswitch.six.moves.builtins as builtins
 
 
 class FileSystemTestCase(unittest.TestCase):
@@ -38,9 +38,9 @@ class FileSystemTestCase(unittest.TestCase):
         return os.path.join(self.getMyDir(), dirName)
 
     def copyDataToWorkingDir(self, dataSrc, workingDirDest):
+        "Copies a file or dir from the data directory to the working directory"
         dataSrc = self.getDataPath(dataSrc)
         workingDirDest = self.getTestPath(workingDirDest)
-        "Copies a file or dir from the data directory to the working directory"
         if os.path.isdir(dataSrc):
             shutil.copytree(dataSrc, workingDirDest)
         else:
@@ -55,7 +55,7 @@ class FileSystemTestCase(unittest.TestCase):
                 shutil.rmtree(fullPath)
 
     def setUpSafeOperations(self):
-        self.real_builtin_open = __builtin__.open
+        self.real_builtin_open = builtins.open
         self.real_os_mkdir = os.mkdir
         self.real_os_makedirs = os.makedirs
         self.real_os_remove = os.remove
@@ -66,7 +66,7 @@ class FileSystemTestCase(unittest.TestCase):
         self.real_shutil_copytree = shutil.copytree
         self.real_shutil_rmtree = shutil.rmtree
 
-        __builtin__.open = self.safe_builtin_open
+        builtins.open = self.safe_builtin_open
         os.mkdir = self.safe_os_mkdir
         os.makedirs = self.safe_os_makedirs
         os.remove = self.safe_os_remove
@@ -76,7 +76,7 @@ class FileSystemTestCase(unittest.TestCase):
         shutil.rmtree = self.safe_shutil_rmtree
 
     def tearDownSafeOperations(self):
-        __builtin__.open = self.real_builtin_open
+        builtins.open = self.real_builtin_open
         os.mkdir = self.real_os_mkdir
         os.makedirs = self.real_os_makedirs
         os.remove = self.real_os_remove
@@ -85,21 +85,20 @@ class FileSystemTestCase(unittest.TestCase):
         shutil.copytree = self.real_shutil_copytree
         shutil.rmtree = self.real_shutil_rmtree
 
-    def safe_builtin_open(self, path, mode='r', buffering=-1):
-        # We only verify if the file is being opened for writing or appending
-        # This is because the unit test framework itself tries to read files
-        # outside the working directory when a test fails
+    def safe_builtin_open(self, path, mode='r', *args, **kwargs):
+        # We only verify if the file is being opened for writing or appending.
+        # Read only access should be allowed.
         if mode.find('w') != -1 or mode.find('a') != -1:
             self.verifyPath(path)
-        return self.real_builtin_open(path, mode, buffering)
+        return self.real_builtin_open(path, mode, *args, **kwargs)
 
-    def safe_os_mkdir(self, path, mode=0777):
+    def safe_os_mkdir(self, path, *args, **kwargs):
         self.verifyPath(path)
-        self.real_os_mkdir(path, mode)
+        self.real_os_mkdir(path, *args, **kwargs)
 
-    def safe_os_makedirs(self, path, mode=0777):
+    def safe_os_makedirs(self, path, *args, **kwargs):
         self.verifyPath(path)
-        self.real_os_makedirs(path, mode)
+        self.real_os_makedirs(path, *args, **kwargs)
 
     def safe_os_remove(self, path):
         self.verifyPath(path)
@@ -115,14 +114,14 @@ class FileSystemTestCase(unittest.TestCase):
         self.verifyPath(dst)
         self.real_shutil_move(src, dst)
 
-    def safe_shutil_copytree(self, src, dst, symlinks=False, ignore=None):
+    def safe_shutil_copytree(self, src, dst, *args, **kwargs):
         # Only need to verify destination path since src will not be modified
         self.verifyPath(dst)
-        self.real_shutil_copytree(src, dst, symlinks, ignore)
+        self.real_shutil_copytree(src, dst, *args, **kwargs)
 
-    def safe_shutil_rmtree(self, path, ignore_errors=False, onerror=None):
+    def safe_shutil_rmtree(self, path, *args, **kwargs):
         self.verifyPath(path)
-        self.real_shutil_rmtree(path, ignore_errors, onerror)
+        self.real_shutil_rmtree(path, *args, **kwargs)
 
     def verifyPath(self, path):
         "Checks that path is inside the working directory"

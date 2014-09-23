@@ -1,4 +1,4 @@
-from FileSystemTestCase import FileSystemTestCase
+from .FileSystemTestCase import FileSystemTestCase
 from vimswitch.DiskIo import DiskIo
 from zipfile import ZipFile
 

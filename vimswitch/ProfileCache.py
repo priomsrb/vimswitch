@@ -1,6 +1,6 @@
 import os
-from Settings import getSettings
-from DiskIo import getDiskIo
+from .Settings import getSettings
+from .DiskIo import getDiskIo
 
 
 class ProfileCache:

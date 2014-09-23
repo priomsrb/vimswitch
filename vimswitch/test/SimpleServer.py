@@ -1,8 +1,9 @@
 import os
-import SimpleHTTPServer
-import SocketServer
+from vimswitch.six.moves.SimpleHTTPServer import SimpleHTTPRequestHandler
+import vimswitch.six.moves.socketserver as socketserver
 import threading
 from time import sleep
+from vimswitch.six.moves import input
 
 
 class SimpleServer(threading.Thread):
@@ -14,7 +15,7 @@ class SimpleServer(threading.Thread):
         threading.Thread.__init__(self)
 
     def run(self):
-        self.httpd = SocketServer.TCPServer((self.address, self.port),
+        self.httpd = socketserver.TCPServer((self.address, self.port),
                                             self.SimpleRequestHandler)
         self.httpd.pathToServe = self.pathToServe
         self.httpd.serve_forever()
@@ -22,16 +23,16 @@ class SimpleServer(threading.Thread):
     def stop(self):
         # Stop may be called before run(). So we wait up to 2 seconds for the
         # TCP server to show up
-        for i in range(20):
+        for _ in range(20):
             if self.httpd is not None:
                 self.httpd.shutdown()
                 self.httpd.socket.close()
                 break
             sleep(0.1)
 
-    class SimpleRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
+    class SimpleRequestHandler(SimpleHTTPRequestHandler):
         def __init__(self, *args, **kwargs):
-            SimpleHTTPServer.SimpleHTTPRequestHandler.__init__(self, *args, **kwargs)
+            SimpleHTTPRequestHandler.__init__(self, *args, **kwargs)
 
         def translate_path(self, path):
             # TODO: prevent path traversal
@@ -51,6 +52,6 @@ if __name__ == '__main__':
     try:
         s = SimpleServer(os.path.abspath(''))
         s.start()
-        raw_input('Press Enter to stop server...\n')
+        input('Press Enter to stop server...\n')
     finally:
         s.stop()

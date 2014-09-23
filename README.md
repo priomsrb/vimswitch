@@ -11,8 +11,7 @@ VimSwitch lets you use your vim settings on any machine.
 - To switch back to your default profile, run `vimswitch default`.
 
 ## Requirements
-VimSwitch just requires Python. So far only Python 2.7.5 has been tested.
+VimSwitch just requires Python. So far only Python 2.7.5 and Python 3.3.2 have been tested.
 
 ## Roadmap
-- Make compatible with Python 3
 - Improve error messages

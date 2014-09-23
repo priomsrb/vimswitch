@@ -1,10 +1,10 @@
-from FakeFileDownloader import createFakeFileDownloader
-from FileSystemTestCase import FileSystemTestCase
-from Stubs import SettingsWorkingDirStub
+from .FakeFileDownloader import createFakeFileDownloader
+from .FileSystemTestCase import FileSystemTestCase
+from .Stubs import SettingsWorkingDirStub
 from mock import patch
 from vimswitch.Application import Application
 from vimswitch.VimSwitch import VimSwitch
-from StringIO import StringIO
+from vimswitch.six import StringIO
 from functools import partial
 
 
@@ -17,6 +17,10 @@ class TestVimSwitch(FileSystemTestCase):
         self.app.fileDownloader = createFakeFileDownloader(self.app, self.getDataPath('fake_internet'))
         self.vimSwitch = VimSwitch(self.app)
         self.vimSwitch.raiseExceptions = True
+        # Python < 3.2 does not have assertNotRegex
+        # TODO: move this into a custom test class and inherit it instead
+        if not hasattr(self, 'assertNotRegex'):
+            self.assertNotRegex = self.assertNotRegexpMatches
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_switchProfile_switchToRemoteProfile(self, stdout):
@@ -118,7 +122,7 @@ class TestVimSwitch(FileSystemTestCase):
         self.assertTrue(diskIo.dirExists(currentVimDirPath))
         # Assert stdout
         assertStdoutContains = partial(self.assertRegexpMatches, stdout.getvalue())
-        assertStdoutNotContains = partial(self.assertNotRegexpMatches, stdout.getvalue())
+        assertStdoutNotContains = partial(self.assertNotRegex, stdout.getvalue())
         assertStdoutNotContains('Downloading')
         assertStdoutContains('Switched to profile: test/vimrc')
 

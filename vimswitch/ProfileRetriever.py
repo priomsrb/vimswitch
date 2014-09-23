@@ -1,10 +1,10 @@
 import os
 from zipfile import ZipFile
-from ProfileUrlResolver import getProfileUrl
-from Settings import getSettings
-from FileDownloader import getFileDownloader
-from ProfileCache import getProfileCache
-from DiskIo import getDiskIo
+from .ProfileUrlResolver import getProfileUrl
+from .Settings import getSettings
+from .FileDownloader import getFileDownloader
+from .ProfileCache import getProfileCache
+from .DiskIo import getDiskIo
 
 
 class ProfileRetriever:

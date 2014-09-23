@@ -1,7 +1,7 @@
-from ActionResolver import getActionResolver
-from Application import Application
-from CommandLineParser import getCommandLineParser
-from ApplicationDirs import getApplicationDirs
+from .ActionResolver import getActionResolver
+from .Application import Application
+from .CommandLineParser import getCommandLineParser
+from .ApplicationDirs import getApplicationDirs
 
 
 class VimSwitch:

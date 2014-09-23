@@ -1,7 +1,7 @@
-from Settings import getSettings
-from ProfileCache import getProfileCache
-from ProfileCopier import getProfileCopier
-from ProfileRetriever import getProfileRetriever
+from .Settings import getSettings
+from .ProfileCache import getProfileCache
+from .ProfileCopier import getProfileCopier
+from .ProfileRetriever import getProfileRetriever
 
 
 class SwitchProfileAction:
