@@ -13,6 +13,7 @@ cls
 set TEST_TYPE=BASIC
 
 echo %TEST_TYPE% TESTS
+python --version
 
 if "%TEST_TYPE%"=="BASIC" (
 :: Add --nocapture to show stdout
