@@ -9,7 +9,7 @@ class VimSwitch:
         self.app = app
         self.raiseExceptions = False
 
-    def run(self, argv):
+    def main(self, argv):
         """
         Runs VimSwitch with the given args. Returns 0 on success, or -1 if an
         error occurred.
