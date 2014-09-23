@@ -10,7 +10,7 @@ cls
 ::   outside the local machine. For example downloading a file from github. 
 ::   Avoid running these tests frequently; we want to be nice to others :)
 :: COVERAGE = Checks the test coverage after running ALL tests
-set TEST_TYPE=BASIC
+set TEST_TYPE=ALL
 
 echo %TEST_TYPE% TESTS
 python --version
