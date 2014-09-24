@@ -380,3 +380,33 @@ class CommonDiskIoTests:
     def test_anyExists_withNothing_returnsFalse(self):
         nonExistantPath = self.getTestPath('non_existant')
         self.assertFalse(self.diskIo.anyExists(nonExistantPath))
+
+    # DiskIo.setReadOnly / DiskIo.isReadOnly
+
+    def test_readOnly_withReadOnlyFile_returnsTrue(self):
+        filePath = self.getTestPath('read_only.txt')
+        self.diskIo.createFile(filePath, 'test data')
+        self.diskIo.setReadOnly(filePath, True)
+
+        self.assertTrue(self.diskIo.isReadOnly(filePath))
+
+    def test_readOnly_withReadOnlyDir_returnsTrue(self):
+        dirPath = self.getTestPath('read_only')
+        self.diskIo.createDir(dirPath)
+        self.diskIo.setReadOnly(dirPath, True)
+
+        self.assertTrue(self.diskIo.isReadOnly(dirPath))
+
+    def test_readOnly_withWritableFile_returnsTrue(self):
+        filePath = self.getTestPath('writable.txt')
+        self.diskIo.createFile(filePath, 'test data')
+        self.diskIo.setReadOnly(filePath, False)
+
+        self.assertFalse(self.diskIo.isReadOnly(filePath))
+
+    def test_readOnly_withWritableDir_returnsTrue(self):
+        dirPath = self.getTestPath('writable')
+        self.diskIo.createDir(dirPath)
+        self.diskIo.setReadOnly(dirPath, False)
+
+        self.assertFalse(self.diskIo.isReadOnly(dirPath))

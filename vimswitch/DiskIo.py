@@ -1,5 +1,6 @@
 import shutil
 import os
+import stat
 
 
 class DiskIo:
@@ -50,6 +51,16 @@ class DiskIo:
 
     def anyExists(self, path):
         return self.fileExists(path) or self.dirExists(path)
+
+    def setReadOnly(self, path, readOnly):
+        if readOnly:
+            os.chmod(path, stat.S_IREAD)
+        else:
+            os.chmod(path, stat.S_IWRITE)
+
+    def isReadOnly(self, path):
+        mode = os.stat(path)[stat.ST_MODE]
+        return not mode & stat.S_IWRITE
 
 
 def getDiskIo(app):

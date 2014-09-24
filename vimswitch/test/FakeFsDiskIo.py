@@ -1,5 +1,6 @@
 import fake_filesystem
 import fake_filesystem_shutil
+import stat
 
 
 class FakeFsDiskIo:
@@ -57,3 +58,13 @@ class FakeFsDiskIo:
 
     def anyExists(self, path):
         return self.fileExists(path) or self.dirExists(path)
+
+    def setReadOnly(self, path, readOnly):
+        if readOnly:
+            self.fake_os.chmod(path, stat.S_IREAD)
+        else:
+            self.fake_os.chmod(path, stat.S_IWRITE)
+
+    def isReadOnly(self, path):
+        mode = self.fake_os.stat(path)[stat.ST_MODE]
+        return not mode & stat.S_IWRITE
