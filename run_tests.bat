@@ -10,23 +10,28 @@ cls
 ::   outside the local machine. For example downloading a file from github. 
 ::   Avoid running these tests frequently; we want to be nice to others :)
 :: COVERAGE = Checks the test coverage after running ALL tests
-set TEST_TYPE=ALL
+:: ONLY = Use this for running a specific test
+
+set TEST_TYPE=BASIC
 
 echo %TEST_TYPE% TESTS
 python --version
 
 if "%TEST_TYPE%"=="BASIC" (
 :: Add --nocapture to show stdout
-nosetests -a "!slow,!external"
+nosetests -a "!slow,!external,!skip"
 )
 if "%TEST_TYPE%"=="ALL" (
-nosetests -a "!external"
+nosetests -a "!external,!skip"
 )
 if "%TEST_TYPE%"=="EXTERNAL" (
-nosetests -a "external"
+nosetests -a "external,!skip"
 )
- if "%TEST_TYPE%"=="COVERAGE" (
-nosetests -a "!external" --with-coverage --cover-package=vimswitch --cover-branches
+if "%TEST_TYPE%"=="COVERAGE" (
+nosetests -a "!external,!skip" --with-coverage --cover-package=vimswitch --cover-branches
+)
+if "%TEST_TYPE%"=="ONLY" (
+rem nosetests vimswitch.test.<module>.<class>
 )
 
 pause
