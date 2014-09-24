@@ -12,10 +12,10 @@ from email.message import Message
 class TestFileDownloader(FileSystemTestCase):
     @classmethod
     def setUpClass(cls):
-        cls.port = 8001
         cls.host = 'localhost'
-        cls.server = SimpleServer(cls.getDataPath(''), cls.host, cls.port)
+        cls.server = SimpleServer(cls.getDataPath(''), cls.host)
         cls.server.start()
+        cls.port = cls.server.getPort()
 
     @classmethod
     def tearDownClass(cls):

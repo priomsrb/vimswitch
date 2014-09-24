@@ -7,7 +7,7 @@ from vimswitch.six.moves import input
 
 
 class SimpleServer(threading.Thread):
-    def __init__(self, pathToServe, address='127.0.0.1', port=8001):
+    def __init__(self, pathToServe, address='127.0.0.1', port=0):
         self.pathToServe = pathToServe
         self.address = address
         self.port = port
@@ -20,15 +20,22 @@ class SimpleServer(threading.Thread):
         self.httpd.pathToServe = self.pathToServe
         self.httpd.serve_forever()
 
+    def getPort(self):
+        self.waitForServer()
+        ip, port = self.httpd.server_address
+        return port
+
     def stop(self):
-        # Stop may be called before run(). So we wait up to 2 seconds for the
-        # TCP server to show up
-        for _ in range(20):
+        self.waitForServer()
+        self.httpd.shutdown()
+        self.httpd.socket.close()
+
+    def waitForServer(self):
+        # Wait until self.httpd is intitialised
+        for _ in range(1000):
             if self.httpd is not None:
-                self.httpd.shutdown()
-                self.httpd.socket.close()
-                break
-            sleep(0.1)
+                return
+            sleep(0.001)
 
     class SimpleRequestHandler(SimpleHTTPRequestHandler):
         def __init__(self, *args, **kwargs):
