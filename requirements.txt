@@ -1,3 +1,5 @@
 nose
 coverage
 mock
+fs
+pyfakefs
