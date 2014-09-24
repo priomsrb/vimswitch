@@ -1,5 +1,6 @@
 import unittest
 import os
+import stat
 import shutil
 import vimswitch.six.moves.builtins as builtins
 
@@ -50,9 +51,12 @@ class FileSystemTestCase(unittest.TestCase):
         for entry in os.listdir(self.getWorkingDir()):
             fullPath = os.path.join(self.getWorkingDir(), entry)
             if os.path.isfile(fullPath):
+                # If file is readonly, make it writable
+                if not os.access(fullPath, os.W_OK):
+                    os.chmod(fullPath, stat.S_IWRITE)
                 os.remove(fullPath)
             elif os.path.isdir(fullPath):
-                shutil.rmtree(fullPath)
+                shutil.rmtree(fullPath, onerror=_remove_readonly)
 
     def setUpSafeOperations(self):
         self.real_builtin_open = builtins.open
@@ -133,3 +137,8 @@ class FileSystemTestCase(unittest.TestCase):
 class TestSandboxError(Exception):
     def __init__(self, path):
         Exception.__init__(self, 'Tried to access path outside test working directory: %s' % path)
+
+
+def _remove_readonly(func, path, excinfo):
+    os.chmod(path, stat.S_IWRITE)
+    func(path)
