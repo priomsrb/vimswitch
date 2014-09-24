@@ -1,15 +1,14 @@
-from .FileSystemTestCase import FileSystemTestCase
-from vimswitch.DiskIo import DiskIo
+import os.path
 
 
-class TestDiskIo(FileSystemTestCase):
-    def __init__(self, *args, **kwargs):
-        self.diskIoType = DiskIo
-        FileSystemTestCase.__init__(self, *args, **kwargs)
-
+class CommonDiskIoTests:
     def setUp(self):
-        FileSystemTestCase.setUp(self)
-        self.diskIo = self.diskIoType()
+        'Create self.diskIo here'
+        pass
+
+    def getTestPath(self, path):
+        'Override this if you need to prefix paths with a working directory'
+        return os.path.normpath(path)
 
     # DiskIo.createFile
 

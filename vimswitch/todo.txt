@@ -1,6 +1,7 @@
 On back:
 
 Todo:
+- Migrate FileSystemTestCase's to use FakeDiskIo
 - Find places where we do 'import .Module'. Replace with 'from .Module import foo'
 - Write tests for when ~/.vim or ~/.vimrc are read only. Should display a useful error message
 - Write test for switching to the current profile
@@ -39,3 +40,4 @@ Done:
 - Create default settings files
 - Find a way for vimswitch/test/workingDir to be added to git. Otherwise generate it during tests. [Added a README file inside it]
 - Write VimSwitch tests for no args and invalid args.
+- Use PyFakeFS to make FakeFsDiskIo

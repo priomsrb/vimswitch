@@ -1,13 +1,8 @@
-from .test_DiskIo import TestDiskIo
+import unittest
+from .CommonDiskIoTests import CommonDiskIoTests
 from .FakeMemoryFsDiskIo import FakeMemoryFsDiskIo
 
 
-class TestFakeMemoryFsDiskIo(TestDiskIo):
-    def __init__(self, *args, **kwargs):
-        TestDiskIo.__init__(self, *args, **kwargs)
-        self.diskIoType = FakeMemoryFsDiskIo
-
+class TestFakeMemoryFsDiskIo(unittest.TestCase, CommonDiskIoTests):
     def setUp(self):
-        TestDiskIo.setUp(self)
-        if not self.diskIo.dirExists(self.getWorkingDir()):
-            self.diskIo.createDirWithParents(self.getWorkingDir())
+        self.diskIo = FakeMemoryFsDiskIo()
