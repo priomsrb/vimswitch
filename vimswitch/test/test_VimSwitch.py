@@ -62,7 +62,7 @@ class TestVimSwitch(FileSystemTestCase):
 
         exitCode = self.vimSwitch.main(argv)
 
-        self.assertEqual(exitCode, -1)
+        self.assertEqual(exitCode, -1, stdout.getvalue())
         # Assert home profile is unchanged
         downloadedVimrcFilePath = self.getTestPath('.vimrc')
         downloadedVimDirPath = self.getTestPath('.vim')
@@ -87,7 +87,7 @@ class TestVimSwitch(FileSystemTestCase):
         # Now switch to another profile
         exitCode = self.vimSwitch.main(argv2)
 
-        self.assertEqual(exitCode, 0)
+        self.assertEqual(exitCode, 0, stdout.getvalue())
         # Assert current profile is now test2/vimrc
         diskIo = self.app.diskIo
         currentVimrcFilePath = self.getTestPath('.vimrc')
@@ -112,7 +112,7 @@ class TestVimSwitch(FileSystemTestCase):
         # Switch back to the first profile
         exitCode = self.vimSwitch.main(argv1)
 
-        self.assertEqual(exitCode, 0)
+        self.assertEqual(exitCode, 0, stdout.getvalue())
         # Assert current profile is now test/vimrc
         diskIo = self.app.diskIo
         currentVimrcFilePath = self.getTestPath('.vimrc')
@@ -160,6 +160,41 @@ class TestVimSwitch(FileSystemTestCase):
         homeVimDirPath = self.getTestPath('.vim')
         self.assertFalse(diskIo.anyExists(homeVimrcFilePath))
         self.assertFalse(diskIo.anyExists(homeVimDirPath))
+
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_switchProfile_switchFromReadOnlyProfileData(self, stdout):
+        diskIo = self.app.diskIo
+        self.copyDataToWorkingDir('home/.vimrc', '.vimrc')
+        self.copyDataToWorkingDir('home/.vim', '.vim')
+        dummyPluginPath = self.getTestPath('.vim/plugin/dummy_plugin.vim')
+        diskIo.setReadOnly(dummyPluginPath, True)
+        argv = ['./vimswitch', 'test/vimrc']
+
+        exitCode = self.vimSwitch.main(argv)
+
+        self.assertEqual(exitCode, 0, stdout.getvalue())
+        # Assert default profile is created
+        defaultVimrcFilePath = self.getTestPath('.vimswitch/default/.vimrc')
+        defaultVimDirPath = self.getTestPath('.vimswitch/default/.vim')
+        defaultVimrcContents = diskIo.getFileContents(defaultVimrcFilePath)
+        defaultDummyPluginPath = self.getTestPath('.vimswitch/default/.vim/plugin/dummy_plugin.vim')
+        defaultDummyPluginContents = diskIo.getFileContents(defaultDummyPluginPath)
+        self.assertEqual(defaultVimrcContents, '" home vimrc data')
+        self.assertEqual(defaultDummyPluginContents, '" dummy home vim plugin')
+        self.assertTrue(diskIo.dirExists(defaultVimDirPath))
+        # Assert home profile is replaced by downloaded profile
+        downloadedVimrcFilePath = self.getTestPath('.vimrc')
+        downloadedVimDirPath = self.getTestPath('.vim')
+        downloadedVimrcContents = diskIo.getFileContents(downloadedVimrcFilePath)
+        self.assertEqual(downloadedVimrcContents, '" test vimrc data')
+        self.assertTrue(diskIo.dirExists(downloadedVimDirPath))
+        # Assert home profile no longer contains read-only file
+        oldDummyPluginPath = self.getTestPath('.vim/plugin/dummy_plugin.vim')
+        self.assertFalse(diskIo.anyExists(oldDummyPluginPath))
+        # Assert stdout
+        assertStdoutContains = partial(self.assertRegexpMatches, stdout.getvalue())
+        assertStdoutContains('Downloading profile from https://github.com/test/vimrc/archive/master.zip')
+        assertStdoutContains('Switched to profile: test/vimrc')
 
     def test_switchProfile_ignoresNonProfileFiles(self):
         # We will check that the following files and dirs still exist after
@@ -231,7 +266,7 @@ class TestVimSwitch(FileSystemTestCase):
 
         exitCode = self.vimSwitch.main(argv)
 
-        self.assertEqual(exitCode, 0)
+        self.assertEqual(exitCode, 0, stdout.getvalue())
         # Assert stdout
         assertStdoutContains = partial(self.assertRegexpMatches, stdout.getvalue())
         assertStdoutContains('VimSwitch .*')
@@ -244,7 +279,7 @@ class TestVimSwitch(FileSystemTestCase):
 
         exitCode = self.vimSwitch.main(argv)
 
-        self.assertEqual(exitCode, -1)
+        self.assertEqual(exitCode, -1, stdout.getvalue())
         # Assert stdout
         assertStdoutContains = partial(self.assertRegexpMatches, stdout.getvalue())
         assertStdoutContains('Invalid arguments. Use `vimswitch myuser/myrepo` to switch profiles.')

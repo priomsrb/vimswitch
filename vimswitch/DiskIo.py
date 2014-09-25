@@ -41,7 +41,11 @@ class DiskIo:
         return shutil.copytree(srcPath, destPath)
 
     def deleteDir(self, dirPath):
-        shutil.rmtree(dirPath)
+        """
+        Recursively delete a directory. Read-only files inside the directory
+        will also be deleted.
+        """
+        shutil.rmtree(dirPath, onerror=self._remove_readonly)
 
     def dirExists(self, dirPath):
         return os.path.isdir(dirPath)
@@ -61,6 +65,12 @@ class DiskIo:
     def isReadOnly(self, path):
         mode = os.stat(path)[stat.ST_MODE]
         return not mode & stat.S_IWRITE
+
+    # Private
+
+    def _remove_readonly(self, func, path, excinfo):
+        os.chmod(path, stat.S_IWRITE)
+        func(path)
 
 
 def getDiskIo(app):

@@ -1,4 +1,5 @@
 import os.path
+import inspect
 
 
 class CommonDiskIoTests:
@@ -317,6 +318,22 @@ class CommonDiskIoTests:
     def test_deleteDir_dirDoesNotExist_raiseError(self):
         dirPath = self.getTestPath('dir1')
         self.assertRaises(Exception, self.diskIo.deleteDir, dirPath)
+
+    def test_deleteDir_deletesReadOnlyFiles(self):
+        dirPath = self.getTestPath('dir1')
+        innerDirPath = self.getTestPath('dir1/innerDir')
+        innerFilePath = self.getTestPath('dir1/innerFile.txt')
+        self.diskIo.createDir(dirPath)
+        self.diskIo.createDir(innerDirPath)
+        self.diskIo.createFile(innerFilePath, 'test data')
+        self.diskIo.setReadOnly(innerDirPath, True)
+        self.diskIo.setReadOnly(innerFilePath, True)
+
+        self.diskIo.deleteDir(dirPath)
+
+        self.assertFalse(self.diskIo.anyExists(dirPath))
+        self.assertFalse(self.diskIo.anyExists(innerDirPath))
+        self.assertFalse(self.diskIo.anyExists(innerFilePath))
 
     # DiskIo.dirExists
 

@@ -48,6 +48,10 @@ class FakeFsDiskIo:
         return self.fake_shutil.copytree(srcPath, destPath)
 
     def deleteDir(self, dirPath):
+        """
+        Recursively delete a directory. Read-only files inside the directory
+        will also be deleted.
+        """
         self.fake_shutil.rmtree(dirPath)
 
     def dirExists(self, dirPath):
