@@ -22,10 +22,7 @@ class TestVimSwitch(FileSystemTestCase):
         if not hasattr(self, 'assertNotRegex'):
             self.assertNotRegex = self.assertNotRegexpMatches
 
-    @patch('sys.stdout', new_callable=StringIO)
-    def test_switchProfile_switchToRemoteProfile(self, stdout):
-        self.copyDataToWorkingDir('home/.vimrc', '.vimrc')
-        self.copyDataToWorkingDir('home/.vim', '.vim')
+    def test_switchProfile_createsApplicationDirs(self):
         argv = ['./vimswitch', 'test/vimrc']
 
         exitCode = self.vimSwitch.main(argv)
@@ -37,7 +34,18 @@ class TestVimSwitch(FileSystemTestCase):
         self.assertTrue(diskIo.dirExists(settings.configPath))
         self.assertTrue(diskIo.dirExists(settings.cachePath))
         self.assertTrue(diskIo.dirExists(settings.downloadsPath))
+
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_switchProfile_switchToRemoteProfile(self, stdout):
+        self.copyDataToWorkingDir('home/.vimrc', '.vimrc')
+        self.copyDataToWorkingDir('home/.vim', '.vim')
+        argv = ['./vimswitch', 'test/vimrc']
+
+        exitCode = self.vimSwitch.main(argv)
+
+        self.assertEqual(exitCode, 0)
         # Assert default profile is created
+        diskIo = self.app.diskIo
         defaultVimrcFilePath = self.getTestPath('.vimswitch/default/.vimrc')
         defaultVimDirPath = self.getTestPath('.vimswitch/default/.vim')
         defaultVimrcContents = diskIo.getFileContents(defaultVimrcFilePath)
