@@ -25,7 +25,7 @@ class ProfileRetriever:
         if self.profileCache.contains(profile):
             self.profileCache.delete(profile)
 
-        profileDir = self.profileCache.getLocation(profile)
+        profileDir = self.profileCache.getProfileLocation(profile)
         self.diskIo.move(extractionDir, profileDir)
 
 

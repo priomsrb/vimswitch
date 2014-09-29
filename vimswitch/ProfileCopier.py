@@ -17,7 +17,7 @@ class ProfileCopier:
         # profile at home. So we should use the 'operate on temp then rename'
         # pattern
         homePath = self.settings.homePath
-        profilePath = self.profileCache.getLocation(profile)
+        profilePath = self.profileCache.getProfileLocation(profile)
         self.profileDataIo.delete(homePath)
         self.profileDataIo.copy(profilePath, homePath)
 
@@ -28,7 +28,7 @@ class ProfileCopier:
         """
         if not self.profileCache.contains(profile):
             self.profileCache.createEmptyProfile(profile)
-        profilePath = self.profileCache.getLocation(profile)
+        profilePath = self.profileCache.getProfileLocation(profile)
         homePath = self.settings.homePath
         self.profileDataIo.delete(profilePath)
         self.profileDataIo.copy(homePath, profilePath)

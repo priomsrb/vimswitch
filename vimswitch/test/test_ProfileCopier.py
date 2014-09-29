@@ -13,7 +13,7 @@ class TestProfileCopier(unittest.TestCase):
         self.settings = Stubs.SettingsStub()
         self.diskIo = Stubs.DiskIoStub()
         # We use the real ProfileCache (with stubbed dependencies) because
-        # ProfileCache.getLocation gets called by ProfileCopier
+        # ProfileCache.getProfileLocation gets called by ProfileCopier
         self.profileCache = ProfileCache(self.settings, self.diskIo)
         self.profileDataIo = Stubs.ProfileDataIoStub()
         self.profileCopier = ProfileCopier(self.settings, self.profileCache, self.profileDataIo)

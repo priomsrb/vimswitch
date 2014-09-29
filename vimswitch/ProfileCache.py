@@ -9,20 +9,20 @@ class ProfileCache:
         self.diskIo = diskIo
 
     def contains(self, profile):
-        profileLocation = self.getLocation(profile)
+        profileLocation = self.getProfileLocation(profile)
         return self.diskIo.dirExists(profileLocation)
 
     def delete(self, profile):
-        profileDirPath = self.getLocation(profile)
+        profileDirPath = self.getProfileLocation(profile)
         self.diskIo.deleteDir(profileDirPath)
 
-    def getLocation(self, profile):
+    def getProfileLocation(self, profile):
         """Returns the path where profile is located"""
         fullPath = os.path.join(self.settings.cachePath, profile.getDirName())
         return os.path.normpath(fullPath)
 
     def createEmptyProfile(self, profile):
-        location = self.getLocation(profile)
+        location = self.getProfileLocation(profile)
         self.diskIo.createDir(location)
 
 

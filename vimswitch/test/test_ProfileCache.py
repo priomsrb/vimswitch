@@ -42,12 +42,12 @@ class TestProfileCache(FileSystemTestCase):
 
         self.assertFalse(self.profileCache.contains(self.testProfile))
 
-    # ProfileCache.getLocation
+    # ProfileCache.getProfileLocation
 
-    def test_getLocation(self):
+    def test_getProfileLocation(self):
         self.settings.cachePath = '/foo/bar/cache'
         profile = Profile('test/vimrc')
-        result = self.profileCache.getLocation(profile)
+        result = self.profileCache.getProfileLocation(profile)
         self.assertEquals(result, os.path.normpath('/foo/bar/cache/test.vimrc'))
 
     # ProfileCache.createEmptyProfile
