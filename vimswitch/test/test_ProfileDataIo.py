@@ -1,14 +1,15 @@
-import unittest
 from . import Stubs
-import os
 from .TestHelpers import assertNoCall
 from vimswitch.ProfileDataIo import ProfileDataIo
+from vimswitch.Settings import Settings
+import os
+import unittest
 
 
 class TestProfileDataIo(unittest.TestCase):
     def setUp(self):
         self.diskIo = Stubs.DiskIoStub()
-        self.settings = Stubs.SettingsStub()
+        self.settings = Settings(os.path.normpath('/home/foo'))
         self.profileDataIo = ProfileDataIo(self.settings, self.diskIo)
 
     # ProfileDataIo.delete#files

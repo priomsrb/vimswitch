@@ -1,6 +1,6 @@
 from .FakeFileDownloader import createFakeFileDownloader
 from .FileSystemTestCase import FileSystemTestCase
-from .Stubs import SettingsWorkingDirStub
+from vimswitch.Settings import Settings
 from mock import patch
 from vimswitch.Application import Application
 from vimswitch.VimSwitch import VimSwitch
@@ -25,7 +25,7 @@ class TestVimSwitch(FileSystemTestCase):
         after every vimswitch.main().
         """
         self.app = Application()
-        self.app.settings = SettingsWorkingDirStub(self.getWorkingDir())
+        self.app.settings = Settings(self.getWorkingDir())
         self.app.fileDownloader = createFakeFileDownloader(self.app, self.getDataPath('fake_internet'))
         self.vimSwitch = VimSwitch(self.app)
         self.vimSwitch.raiseExceptions = True

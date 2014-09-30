@@ -1,16 +1,17 @@
-import unittest
 from . import Stubs
-import os
 from mock import MagicMock
 from vimswitch.Profile import Profile
 from vimswitch.ProfileCache import ProfileCache
 from vimswitch.ProfileCopier import ProfileCopier
+from vimswitch.Settings import Settings
+import os
+import unittest
 
 
 class TestProfileCopier(unittest.TestCase):
     def setUp(self):
         self.profile = Profile('test/vimrc')
-        self.settings = Stubs.SettingsStub()
+        self.settings = Settings(os.path.normpath('/home/foo'))
         self.diskIo = Stubs.DiskIoStub()
         # We use the real ProfileCache (with stubbed dependencies) because
         # ProfileCache.getProfileLocation gets called by ProfileCopier

@@ -1,5 +1,5 @@
 from .FileSystemTestCase import FileSystemTestCase
-from .Stubs import SettingsWorkingDirStub
+from vimswitch.Settings import Settings
 from vimswitch.DiskIo import getDiskIo
 from vimswitch.ApplicationDirs import getApplicationDirs
 from vimswitch.Application import Application
@@ -9,7 +9,7 @@ class TestApplicationDirs(FileSystemTestCase):
     def setUp(self):
         FileSystemTestCase.setUp(self)
         app = Application()
-        app.settings = SettingsWorkingDirStub(self.getWorkingDir())
+        app.settings = Settings(self.getWorkingDir())
         self.settings = app.settings
         self.diskIo = getDiskIo(app)
         self.applicationDirs = getApplicationDirs(app)

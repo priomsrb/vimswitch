@@ -1,5 +1,5 @@
 import os
-from . import Stubs
+from vimswitch.Settings import Settings
 from vimswitch.DiskIo import DiskIo
 from vimswitch.ProfileCache import ProfileCache
 from vimswitch.Profile import Profile
@@ -11,7 +11,7 @@ class TestProfileCache(FileSystemTestCase):
     def setUp(self):
         FileSystemTestCase.setUp(self)
         self.diskIo = DiskIo()
-        self.settings = Stubs.SettingsWorkingDirStub(self.getWorkingDir())
+        self.settings = Settings(self.getWorkingDir())
         self.diskIo.createDirWithParents(self.settings.cachePath)
         self.profileCache = ProfileCache(self.settings, self.diskIo)
         self.testProfile = Profile('test/vimrc')

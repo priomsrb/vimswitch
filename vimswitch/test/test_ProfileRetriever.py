@@ -1,12 +1,12 @@
 from .FakeFileDownloader import FakeFileDownloader
 from .FileSystemTestCase import FileSystemTestCase
-from vimswitch.six import StringIO
-from .Stubs import SettingsWorkingDirStub
 from mock import patch
 from vimswitch.DiskIo import DiskIo
 from vimswitch.Profile import Profile
 from vimswitch.ProfileCache import ProfileCache
 from vimswitch.ProfileRetriever import ProfileRetriever
+from vimswitch.Settings import Settings
+from vimswitch.six import StringIO
 
 
 class TestProfileRetriever(FileSystemTestCase):
@@ -14,7 +14,7 @@ class TestProfileRetriever(FileSystemTestCase):
         FileSystemTestCase.setUp(self)
         self.diskIo = DiskIo()
 
-        self.settings = SettingsWorkingDirStub(self.getWorkingDir())
+        self.settings = Settings(self.getWorkingDir())
         self.diskIo.createDirWithParents(self.settings.downloadsPath)
 
         fileDownloader = FakeFileDownloader(self.getDataPath('fake_internet'), self.diskIo)

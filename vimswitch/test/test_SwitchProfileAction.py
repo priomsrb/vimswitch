@@ -1,7 +1,7 @@
 from .FakeFileDownloader import createFakeFileDownloader
 from .FileSystemTestCase import FileSystemTestCase
 from vimswitch.six import StringIO
-from .Stubs import SettingsWorkingDirStub
+from vimswitch.Settings import Settings
 from mock import MagicMock, patch
 from vimswitch.Application import Application
 from vimswitch.Profile import Profile
@@ -14,7 +14,7 @@ class TestSwitchProfileAction(FileSystemTestCase):
     def setUp(self):
         FileSystemTestCase.setUp(self)
         self.app = Application()
-        self.app.settings = SettingsWorkingDirStub(self.getWorkingDir())
+        self.app.settings = Settings(self.getWorkingDir())
         self.app.fileDownloader = createFakeFileDownloader(self.app, self.getDataPath('fake_internet'))
         self.switchProfileAction = getSwitchProfileAction(self.app)
         self.app.diskIo.createDirWithParents(self.app.settings.cachePath)
