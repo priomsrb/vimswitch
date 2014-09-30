@@ -1,12 +1,12 @@
 from . import Stubs
+from .BaseTestCase import BaseTestCase
 from .TestHelpers import assertNoCall
 from vimswitch.ProfileDataIo import ProfileDataIo
 from vimswitch.Settings import Settings
 import os
-import unittest
 
 
-class TestProfileDataIo(unittest.TestCase):
+class TestProfileDataIo(BaseTestCase):
     def setUp(self):
         self.diskIo = Stubs.DiskIoStub()
         self.settings = Settings(os.path.normpath('/home/foo'))

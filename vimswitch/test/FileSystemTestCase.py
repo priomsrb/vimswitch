@@ -1,11 +1,11 @@
-import unittest
+from .BaseTestCase import BaseTestCase
 import os
-import stat
 import shutil
+import stat
 import vimswitch.six.moves.builtins as builtins
 
 
-class FileSystemTestCase(unittest.TestCase):
+class FileSystemTestCase(BaseTestCase):
     def setUp(self):
         self.setUpSafeOperations()
         self.clearWorkingDirectory()

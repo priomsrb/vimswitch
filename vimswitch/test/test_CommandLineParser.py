@@ -1,9 +1,9 @@
-import unittest
+from .BaseTestCase import BaseTestCase
 from vimswitch.CommandLineParser import CommandLineParser
 from vimswitch.Profile import Profile
 
 
-class TestCommandLineParser(unittest.TestCase):
+class TestCommandLineParser(BaseTestCase):
 
     def setUp(self):
         self.commandLineParser = CommandLineParser()

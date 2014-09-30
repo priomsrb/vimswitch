@@ -1,13 +1,13 @@
+from .BaseTestCase import BaseTestCase
+from .Stubs import DiskIoStub
 from mock import patch
 from vimswitch.ActionResolver import ActionResolver
 from vimswitch.Application import Application
 from vimswitch.CommandLineParser import CommandLineParser
 from vimswitch.Profile import Profile
-from .Stubs import DiskIoStub
-import unittest
 
 
-class TestActionResolver(unittest.TestCase):
+class TestActionResolver(BaseTestCase):
 
     def setUp(self):
         app = Application()

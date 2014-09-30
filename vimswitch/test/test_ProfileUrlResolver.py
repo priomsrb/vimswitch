@@ -1,9 +1,9 @@
-import unittest
+from .BaseTestCase import BaseTestCase
 from vimswitch.Profile import Profile
 from vimswitch.ProfileUrlResolver import getProfileUrl
 
 
-class TestProfileUrlResolver(unittest.TestCase):
+class TestProfileUrlResolver(BaseTestCase):
 
     def test_getProfileUrl_convertsUserSlashRepo(self):
         profile = Profile('testuser/testrepo')

@@ -13,10 +13,6 @@ class TestVimSwitch(FileSystemTestCase):
     def setUp(self):
         FileSystemTestCase.setUp(self)
         self.resetApplication()
-        # Python < 3.2 does not have assertNotRegex
-        # TODO: move this into a custom test class and inherit it instead
-        if not hasattr(self, 'assertNotRegex'):
-            self.assertNotRegex = self.assertNotRegexpMatches
 
     def resetApplication(self):
         """

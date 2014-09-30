@@ -1,8 +1,8 @@
-import unittest
+from .BaseTestCase import BaseTestCase
 from .CommonDiskIoTests import CommonDiskIoTests
 from .FakeFsDiskIo import FakeFsDiskIo
 
 
-class TestFakeFsDiskIo(unittest.TestCase, CommonDiskIoTests):
+class TestFakeFsDiskIo(BaseTestCase, CommonDiskIoTests):
     def setUp(self):
         self.diskIo = FakeFsDiskIo()

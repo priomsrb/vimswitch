@@ -1,8 +1,8 @@
-import unittest
+from .BaseTestCase import BaseTestCase
 from vimswitch.Profile import Profile
 
 
-class TestProfile(unittest.TestCase):
+class TestProfile(BaseTestCase):
 
     def test_getDirName_withSlashes_replacedByDot(self):
         profile = Profile('user/repo')

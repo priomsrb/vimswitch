@@ -1,14 +1,14 @@
 from . import Stubs
+from .BaseTestCase import BaseTestCase
 from mock import MagicMock
 from vimswitch.Profile import Profile
 from vimswitch.ProfileCache import ProfileCache
 from vimswitch.ProfileCopier import ProfileCopier
 from vimswitch.Settings import Settings
 import os
-import unittest
 
 
-class TestProfileCopier(unittest.TestCase):
+class TestProfileCopier(BaseTestCase):
     def setUp(self):
         self.profile = Profile('test/vimrc')
         self.settings = Settings(os.path.normpath('/home/foo'))

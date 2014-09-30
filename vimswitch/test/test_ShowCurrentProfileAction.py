@@ -1,13 +1,13 @@
+from .BaseTestCase import BaseTestCase
 from functools import partial
 from mock import patch
 from vimswitch.Application import Application
 from vimswitch.Profile import Profile
 from vimswitch.ShowCurrentProfileAction import createShowCurrentProfileAction
 from vimswitch.six import StringIO
-import unittest
 
 
-class TestShowCurrentProfileAction(unittest.TestCase):
+class TestShowCurrentProfileAction(BaseTestCase):
     def setUp(self):
         self.app = Application()
         self.action = createShowCurrentProfileAction(self.app)
