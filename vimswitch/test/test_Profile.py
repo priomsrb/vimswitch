@@ -23,7 +23,6 @@ class TestProfile(unittest.TestCase):
         self.assertEqual(profile1, profile2)
 
     def test_notEqual(self):
-        profile1 = Profile('user/repo1')
-        profile2 = Profile('user/repo2')
-
-        self.assertNotEqual(profile1, profile2)
+        self.assertNotEqual(Profile('user/repo1'), Profile('user/repo2'))
+        self.assertNotEqual(Profile('user/repo1'), None)
+        self.assertNotEqual(None, Profile('user/repo2'))

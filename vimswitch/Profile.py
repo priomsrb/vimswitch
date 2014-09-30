@@ -9,7 +9,10 @@ class Profile:
         return self.name.replace('/', '.')
 
     def __eq__(self, other):
-        return self.name == other.name
+        return isinstance(other, Profile) and self.name == other.name
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
     def __repr__(self):
         return "Profile('%s')" % self.name

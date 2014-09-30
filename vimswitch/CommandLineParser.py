@@ -4,7 +4,7 @@ from .Profile import Profile
 class CommandLineParser:
     def parse(self, argv):
         if len(argv) == 1:
-            self.action = 'shortHelp'
+            self.action = 'showCurrentProfile'
         elif len(argv) == 2:
             self.action = 'switchProfile'
             profileName = argv[1]

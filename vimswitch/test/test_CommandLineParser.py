@@ -8,10 +8,10 @@ class TestCommandLineParser(unittest.TestCase):
     def setUp(self):
         self.commandLineParser = CommandLineParser()
 
-    def test_parse_emptyArgs_setsShortHelpAction(self):
+    def test_parse_emptyArgs_setsShowCurrentProfileAction(self):
         argv = ['./vimswitch']
         self.commandLineParser.parse(argv)
-        self.assertEqual(self.commandLineParser.action, 'shortHelp')
+        self.assertEqual(self.commandLineParser.action, 'showCurrentProfile')
 
     def test_parse_setsSwitchProfileAction(self):
         argv = ['./vimswitch', 'test/vimrc']

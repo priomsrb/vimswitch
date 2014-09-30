@@ -12,15 +12,23 @@ class TestVimSwitch(FileSystemTestCase):
 
     def setUp(self):
         FileSystemTestCase.setUp(self)
+        self.resetApplication()
+        # Python < 3.2 does not have assertNotRegex
+        # TODO: move this into a custom test class and inherit it instead
+        if not hasattr(self, 'assertNotRegex'):
+            self.assertNotRegex = self.assertNotRegexpMatches
+
+    def resetApplication(self):
+        """
+        Resets the state of the application. If you need to call
+        vimswitch.main() multiple times in a test, make sure to call this method
+        after every vimswitch.main().
+        """
         self.app = Application()
         self.app.settings = SettingsWorkingDirStub(self.getWorkingDir())
         self.app.fileDownloader = createFakeFileDownloader(self.app, self.getDataPath('fake_internet'))
         self.vimSwitch = VimSwitch(self.app)
         self.vimSwitch.raiseExceptions = True
-        # Python < 3.2 does not have assertNotRegex
-        # TODO: move this into a custom test class and inherit it instead
-        if not hasattr(self, 'assertNotRegex'):
-            self.assertNotRegex = self.assertNotRegexpMatches
 
     def test_switchProfile_createsApplicationDirs(self):
         argv = ['./vimswitch', 'test/vimrc']
@@ -90,7 +98,10 @@ class TestVimSwitch(FileSystemTestCase):
         argv2 = ['./vimswitch', 'test2/vimrc']
         # Switch to an initial profile
         self.vimSwitch.main(argv1)
-        stdout.truncate(0)  # Clear stdout from previous calls
+        self.resetApplication()
+        # Clear stdout from previous calls
+        stdout.truncate(0)
+        stdout.seek(0)
 
         # Now switch to another profile
         exitCode = self.vimSwitch.main(argv2)
@@ -114,8 +125,12 @@ class TestVimSwitch(FileSystemTestCase):
         argv2 = ['./vimswitch', 'test2/vimrc']
         # Download 2 profiles
         self.vimSwitch.main(argv1)
+        self.resetApplication()
         self.vimSwitch.main(argv2)
-        stdout.truncate(0)  # Clear stdout from previous calls
+        self.resetApplication()
+        # Clear stdout from previous calls
+        stdout.truncate(0)
+        stdout.seek(0)
 
         # Switch back to the first profile
         exitCode = self.vimSwitch.main(argv1)
@@ -157,6 +172,7 @@ class TestVimSwitch(FileSystemTestCase):
         argv2 = ['./vimswitch', 'default']
         # Switch to non-default profile
         self.vimSwitch.main(argv1)
+        self.resetApplication()
 
         # Now switch back to default profile
         exitCode = self.vimSwitch.main(argv2)
@@ -269,7 +285,24 @@ class TestVimSwitch(FileSystemTestCase):
         self.assertTrue(diskIo.dirExists(downloadedVimDirPath))
 
     @patch('sys.stdout', new_callable=StringIO)
-    def test_noArguments_showsHelpMessage(self, stdout):
+    def test_noArguments_showsCurrentProfile(self, stdout):
+        argv1 = ['./vimswitch', 'test/vimrc']
+        argv2 = ['./vimswitch']
+        self.vimSwitch.main(argv1)  # Sets current profile to test/vimrc
+        self.resetApplication()
+        # Clear stdout from previous calls
+        stdout.truncate(0)
+        stdout.seek(0)
+
+        exitCode = self.vimSwitch.main(argv2)
+
+        self.assertEqual(exitCode, 0, stdout.getvalue())
+        # Assert stdout
+        assertStdoutContains = partial(self.assertRegexpMatches, stdout.getvalue())
+        assertStdoutContains('Current profile: test/vimrc')
+
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_noArgumentsAndNoCurrentProfile_showsCurrentProfileIsNone(self, stdout):
         argv = ['./vimswitch']
 
         exitCode = self.vimSwitch.main(argv)
@@ -277,9 +310,7 @@ class TestVimSwitch(FileSystemTestCase):
         self.assertEqual(exitCode, 0, stdout.getvalue())
         # Assert stdout
         assertStdoutContains = partial(self.assertRegexpMatches, stdout.getvalue())
-        assertStdoutContains('VimSwitch .*')
-        assertStdoutContains('To switch to a profile, type:')
-        assertStdoutContains('    vimswitch myuser/myrepo')
+        assertStdoutContains('Current profile: None')
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_tooManyArgs_showsErrorMessage(self, stdout):

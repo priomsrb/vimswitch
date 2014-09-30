@@ -16,6 +16,7 @@ class SwitchProfileAction:
         self._createDefaultProfile()
         self._retrieveProfile(profile)
         self.profileCopier.copyToHome(profile)
+        self.settings.currentProfile = profile
         print('Switched to profile: %s' % profile.name)
 
     def _createDefaultProfile(self):

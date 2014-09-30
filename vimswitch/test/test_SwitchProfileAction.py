@@ -62,6 +62,13 @@ class TestSwitchProfileAction(FileSystemTestCase):
         cachedVimDirPath = os.path.join(self.app.profileCache.getProfileLocation(defaultProfile), '.vim')
         self.assertTrue(self.app.diskIo.dirExists(cachedVimDirPath))
 
+    def test_switchToProfile_setsCurrentProfile(self):
+        self.assertNotEqual(self.app.settings.currentProfile, self.profile)
+
+        self.switchProfileAction.switchToProfile(self.profile)
+
+        self.assertEqual(self.app.settings.currentProfile, self.profile)
+
     @patch('sys.stdout', new_callable=StringIO)
     def test_switchToProfile_prints(self, stdout):
         self.switchProfileAction.switchToProfile(self.profile)

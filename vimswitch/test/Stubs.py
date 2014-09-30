@@ -5,12 +5,9 @@ from vimswitch.DiskIo import DiskIo
 from vimswitch.ProfileDataIo import ProfileDataIo
 
 
+# TODO: Inline this
 def SettingsStub():
-    settings = MagicMock(Settings)
-    settings.profileFiles = ['.vimrc', '_vimrc']
-    settings.profileDirs = ['.vim', '_vim']
-    settings.homePath = os.path.normpath('/home/foo')
-    settings.cachePath = os.path.normpath('/home/foo/.vimswitch')
+    settings = Settings(os.path.normpath('/home/foo'))
     return settings
 
 
@@ -24,11 +21,8 @@ def ProfileDataIoStub():
     return profileDataIo
 
 
+# TODO: Inline this
 def SettingsWorkingDirStub(workingDir):
     "Returns a Settings stub that treats `workingDir` as the home directory"
-    settings = Settings()
-    settings.homePath = workingDir
-    settings.configPath = os.path.join(settings.homePath, '.vimswitch')
-    settings.cachePath = settings.configPath
-    settings.downloadsPath = os.path.join(settings.cachePath, '.downloads')
+    settings = Settings(workingDir)
     return settings

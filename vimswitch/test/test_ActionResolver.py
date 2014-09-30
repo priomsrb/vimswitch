@@ -26,14 +26,14 @@ class TestActionResolver(unittest.TestCase):
         switchProfileAction = mock.return_value
         switchProfileAction.switchToProfile.assert_called_with(self.profile)
 
-    @patch('vimswitch.ActionResolver.ShortHelpAction')
-    def test_doActions_resolvesShortHelpAction(self, mock):
-        self.commandLineParser.action = 'shortHelp'
+    @patch('vimswitch.ActionResolver.createShowCurrentProfileAction')
+    def test_doActions_resolvesShowCurrentProfileAction(self, mock):
+        self.commandLineParser.action = 'showCurrentProfile'
 
         self.actionResolver.doActions()
 
-        shortHelpAction = mock.return_value
-        self.assertTrue(shortHelpAction.execute.called)
+        showCurrentProfileAction = mock.return_value
+        self.assertTrue(showCurrentProfileAction.execute.called)
 
     @patch('vimswitch.ActionResolver.InvalidArgsAction')
     def test_doActions_resolvesInvalidArgsAction(self, mock):

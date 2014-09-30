@@ -1,5 +1,5 @@
 from .InvalidArgsAction import InvalidArgsAction
-from .ShortHelpAction import ShortHelpAction
+from .ShowCurrentProfileAction import createShowCurrentProfileAction
 from .SwitchProfileAction import createSwitchProfileAction
 from .CommandLineParser import getCommandLineParser
 
@@ -15,8 +15,9 @@ class ActionResolver:
         if action == 'switchProfile':
             switchProfileAction = createSwitchProfileAction(self.app)
             switchProfileAction.switchToProfile(self.commandLineParser.profile)
-        elif action == 'shortHelp':
-            ShortHelpAction().execute()
+        elif action == 'showCurrentProfile':
+            showCurrentProfileAction = createShowCurrentProfileAction(self.app)
+            showCurrentProfileAction.execute()
         else:
             InvalidArgsAction().execute()
             self.exitCode = -1
