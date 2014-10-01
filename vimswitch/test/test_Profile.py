@@ -26,3 +26,6 @@ class TestProfile(BaseTestCase):
         self.assertNotEqual(Profile('user/repo1'), Profile('user/repo2'))
         self.assertNotEqual(Profile('user/repo1'), None)
         self.assertNotEqual(None, Profile('user/repo2'))
+
+    def test_repr(self):
+        self.assertEqual(repr(Profile('user/repo')), "Profile('user/repo')")
