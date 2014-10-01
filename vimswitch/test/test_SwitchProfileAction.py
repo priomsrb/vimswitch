@@ -1,11 +1,11 @@
 from .FakeFileDownloader import createFakeFileDownloader
 from .FileSystemTestCase import FileSystemTestCase
-from vimswitch.six import StringIO
-from vimswitch.Settings import Settings
 from mock import MagicMock, patch
 from vimswitch.Application import Application
 from vimswitch.Profile import Profile
+from vimswitch.Settings import Settings
 from vimswitch.SwitchProfileAction import getSwitchProfileAction
+from vimswitch.six import StringIO
 import os
 
 
@@ -93,5 +93,8 @@ class TestSwitchProfileAction(FileSystemTestCase):
     def test_switchToProfile_prints(self, stdout):
         self.switchProfileAction.switchToProfile(self.profile)
 
-        expectedOutput = 'Switched to profile: test/vimrc'
-        self.assertRegexpMatches(stdout.getvalue(), expectedOutput)
+        self.assertMultilineRegexpMatches(stdout.getvalue(), """
+            Saving profile: default
+            Downloading profile from https://github.com/test/vimrc/archive/master.zip
+            Switched to profile: test/vimrc
+        """)
