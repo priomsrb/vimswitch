@@ -5,7 +5,6 @@ from mock import patch
 from vimswitch.Application import Application
 from vimswitch.VimSwitch import VimSwitch
 from vimswitch.six import StringIO
-from functools import partial
 
 
 class TestVimSwitch(FileSystemTestCase):
@@ -62,9 +61,11 @@ class TestVimSwitch(FileSystemTestCase):
         self.assertEqual(downloadedVimrcContents, '" test vimrc data')
         self.assertTrue(diskIo.dirExists(downloadedVimDirPath))
         # Assert stdout
-        assertStdoutContains = partial(self.assertRegexpMatches, stdout.getvalue())
-        assertStdoutContains('Downloading profile from https://github.com/test/vimrc/archive/master.zip')
-        assertStdoutContains('Switched to profile: test/vimrc')
+        self.assertStdout(stdout, """
+            Saving profile: default
+            Downloading profile from https://github.com/test/vimrc/archive/master.zip
+            Switched to profile: test/vimrc
+        """)
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_switchProfile_switchToNonExistantProfile_showsError(self, stdout):
@@ -83,10 +84,11 @@ class TestVimSwitch(FileSystemTestCase):
         self.assertEqual(downloadedVimrcContents, '" home vimrc data')
         self.assertTrue(diskIo.dirExists(downloadedVimDirPath))
         # Assert stdout
-        assertStdoutContains = partial(self.assertRegexpMatches, stdout.getvalue())
-        assertStdoutContains('Downloading profile from https://github.com/non_existant_profile/archive/master.zip')
-        assertStdoutContains('Error:')
-        assertStdoutContains('404 File not found')
+        self.assertStdout(stdout, """
+            Saving profile: default
+            Downloading profile from https://github.com/non_existant_profile/archive/master.zip
+            Error: .* 404 File not found
+        """)
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_switchProfile_switchToAnotherProfile(self, stdout):
@@ -95,9 +97,7 @@ class TestVimSwitch(FileSystemTestCase):
         # Switch to an initial profile
         self.vimSwitch.main(argv1)
         self.resetApplication()
-        # Clear stdout from previous calls
-        stdout.truncate(0)
-        stdout.seek(0)
+        self.resetIo(stdout)
 
         # Now switch to another profile
         exitCode = self.vimSwitch.main(argv2)
@@ -111,25 +111,26 @@ class TestVimSwitch(FileSystemTestCase):
         self.assertEqual(currentVimrcContents, '" test2 vimrc data')
         self.assertTrue(diskIo.dirExists(currentVimDirPath))
         # Assert stdout
-        assertStdoutContains = partial(self.assertRegexpMatches, stdout.getvalue())
-        assertStdoutContains('Downloading profile from https://github.com/test2/vimrc/archive/master.zip')
-        assertStdoutContains('Switched to profile: test2/vimrc')
+        self.assertStdout(stdout, """
+            Saving profile: test/vimrc
+            Downloading profile from https://github.com/test2/vimrc/archive/master.zip
+            Switched to profile: test2/vimrc
+        """)
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_switchProfile_switchToCachedProfile(self, stdout):
         argv1 = ['./vimswitch', 'test/vimrc']
         argv2 = ['./vimswitch', 'test2/vimrc']
+        argv3 = ['./vimswitch', 'test/vimrc']
         # Download 2 profiles
         self.vimSwitch.main(argv1)
         self.resetApplication()
         self.vimSwitch.main(argv2)
         self.resetApplication()
-        # Clear stdout from previous calls
-        stdout.truncate(0)
-        stdout.seek(0)
+        self.resetIo(stdout)
 
         # Switch back to the first profile
-        exitCode = self.vimSwitch.main(argv1)
+        exitCode = self.vimSwitch.main(argv3)
 
         self.assertEqual(exitCode, 0, stdout.getvalue())
         # Assert current profile is now test/vimrc
@@ -140,10 +141,10 @@ class TestVimSwitch(FileSystemTestCase):
         self.assertEqual(currentVimrcContents, '" test vimrc data')
         self.assertTrue(diskIo.dirExists(currentVimDirPath))
         # Assert stdout
-        assertStdoutContains = partial(self.assertRegexpMatches, stdout.getvalue())
-        assertStdoutNotContains = partial(self.assertNotRegex, stdout.getvalue())
-        assertStdoutNotContains('Downloading')
-        assertStdoutContains('Switched to profile: test/vimrc')
+        self.assertStdout(stdout, """
+            Saving profile: test2/vimrc
+            Switched to profile: test/vimrc
+        """)
 
     def test_switchProfile_switchFromEmptyDefaultProfile(self):
         argv = ['./vimswitch', 'test/vimrc']
@@ -212,9 +213,11 @@ class TestVimSwitch(FileSystemTestCase):
         oldDummyPluginPath = self.getTestPath('.vim/plugin/dummy_plugin.vim')
         self.assertFalse(diskIo.anyExists(oldDummyPluginPath))
         # Assert stdout
-        assertStdoutContains = partial(self.assertRegexpMatches, stdout.getvalue())
-        assertStdoutContains('Downloading profile from https://github.com/test/vimrc/archive/master.zip')
-        assertStdoutContains('Switched to profile: test/vimrc')
+        self.assertStdout(stdout, """
+            Saving profile: default
+            Downloading profile from https://github.com/test/vimrc/archive/master.zip
+            Switched to profile: test/vimrc
+        """)
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_switchProfile_savesChangesToCurrentProfile(self, stdout):
@@ -224,9 +227,7 @@ class TestVimSwitch(FileSystemTestCase):
         argv2 = ['./vimswitch', 'default']
         self.vimSwitch.main(argv1)
         self.resetApplication()
-        # Clear stdout from previous calls
-        stdout.truncate(0)
-        stdout.seek(0)
+        self.resetIo(stdout)
         homeVimrcFilePath = self.getTestPath('.vimrc')
         homeVimDirPath = self.getTestPath('.vim')
         diskIo = self.app.diskIo
@@ -244,7 +245,7 @@ class TestVimSwitch(FileSystemTestCase):
         cachedVimDirPath = self.getTestPath('.vimswitch/test.vimrc/.vim')
         self.assertFalse(diskIo.anyExists(cachedVimDirPath))
         # Assert stdout
-        self.assertMultilineRegexpMatches(stdout.getvalue(), """
+        self.assertStdout(stdout, """
             Saving profile: test/vimrc
             Switched to profile: default
         """)
@@ -319,16 +320,15 @@ class TestVimSwitch(FileSystemTestCase):
         argv2 = ['./vimswitch']
         self.vimSwitch.main(argv1)  # Sets current profile to test/vimrc
         self.resetApplication()
-        # Clear stdout from previous calls
-        stdout.truncate(0)
-        stdout.seek(0)
+        self.resetIo(stdout)
 
         exitCode = self.vimSwitch.main(argv2)
 
         self.assertEqual(exitCode, 0, stdout.getvalue())
         # Assert stdout
-        assertStdoutContains = partial(self.assertRegexpMatches, stdout.getvalue())
-        assertStdoutContains('Current profile: test/vimrc')
+        self.assertStdout(stdout, """
+            Current profile: test/vimrc
+        """)
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_noArgumentsAndNoCurrentProfile_showsCurrentProfileIsNone(self, stdout):
@@ -338,8 +338,9 @@ class TestVimSwitch(FileSystemTestCase):
 
         self.assertEqual(exitCode, 0, stdout.getvalue())
         # Assert stdout
-        assertStdoutContains = partial(self.assertRegexpMatches, stdout.getvalue())
-        assertStdoutContains('Current profile: None')
+        self.assertStdout(stdout, """
+            Current profile: None
+        """)
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_tooManyArgs_showsErrorMessage(self, stdout):
@@ -349,5 +350,11 @@ class TestVimSwitch(FileSystemTestCase):
 
         self.assertEqual(exitCode, -1, stdout.getvalue())
         # Assert stdout
-        assertStdoutContains = partial(self.assertRegexpMatches, stdout.getvalue())
-        assertStdoutContains('Invalid arguments. Use `vimswitch myuser/myrepo` to switch profiles.')
+        self.assertStdout(stdout, """
+            Invalid arguments. Use `vimswitch myuser/myrepo` to switch profiles.
+        """)
+
+    # Helpers
+    def resetIo(self, io):
+        io.seek(0)
+        io.truncate(0)

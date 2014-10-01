@@ -61,5 +61,4 @@ class TestProfileRetriever(FileSystemTestCase):
 
         self.profileRetriever.retrieve(profile)
 
-        expectedOutput = 'Downloading profile from .*'
-        self.assertRegexpMatches(stdout.getvalue(), expectedOutput)
+        self.assertStdout(stdout, 'Downloading profile from .*')

@@ -19,3 +19,7 @@ class BaseTestCase(unittest.TestCase):
         regexp = regexp.strip()
         regexp = '^' + regexp + '$'
         self.assertRegexpMatches(string, regexp)
+
+    def assertStdout(self, stdout, regex):
+        "Asserts that the `stdout` io stream matches `regex`"
+        self.assertMultilineRegexpMatches(stdout.getvalue(), regex)

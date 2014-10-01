@@ -1,5 +1,4 @@
 from .BaseTestCase import BaseTestCase
-from functools import partial
 from mock import patch
 from vimswitch.Application import Application
 from vimswitch.Profile import Profile
@@ -18,8 +17,7 @@ class TestShowCurrentProfileAction(BaseTestCase):
 
         self.action.execute()
 
-        assertStdoutContains = partial(self.assertRegexpMatches, stdout.getvalue())
-        assertStdoutContains('Current profile: test/vimrc')
+        self.assertStdout(stdout, 'Current profile: test/vimrc')
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_execute_currentProfileIsNone_printsNone(self, stdout):
@@ -27,5 +25,4 @@ class TestShowCurrentProfileAction(BaseTestCase):
 
         self.action.execute()
 
-        assertStdoutContains = partial(self.assertRegexpMatches, stdout.getvalue())
-        assertStdoutContains('Current profile: None')
+        self.assertStdout(stdout, 'Current profile: None')

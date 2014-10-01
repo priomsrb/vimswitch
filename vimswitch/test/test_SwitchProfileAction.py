@@ -93,7 +93,7 @@ class TestSwitchProfileAction(FileSystemTestCase):
     def test_switchToProfile_prints(self, stdout):
         self.switchProfileAction.switchToProfile(self.profile)
 
-        self.assertMultilineRegexpMatches(stdout.getvalue(), """
+        self.assertStdout(stdout, """
             Saving profile: default
             Downloading profile from https://github.com/test/vimrc/archive/master.zip
             Switched to profile: test/vimrc
