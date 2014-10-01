@@ -216,6 +216,31 @@ class TestVimSwitch(FileSystemTestCase):
         assertStdoutContains('Downloading profile from https://github.com/test/vimrc/archive/master.zip')
         assertStdoutContains('Switched to profile: test/vimrc')
 
+    def test_switchProfile_savesChangesToCurrentProfile(self):
+        self.copyDataToWorkingDir('home/.vimrc', '.vimrc')
+        self.copyDataToWorkingDir('home/.vim', '.vim')
+        argv1 = ['./vimswitch', 'test/vimrc']
+        argv2 = ['./vimswitch', 'default']
+        self.vimSwitch.main(argv1)
+        self.resetApplication()
+        homeVimrcFilePath = self.getTestPath('.vimrc')
+        homeVimDirPath = self.getTestPath('.vim')
+        diskIo = self.app.diskIo
+        # Make changes to the test/vimrc profile
+        diskIo.createFile(homeVimrcFilePath, '" updated vimrc data')
+        diskIo.deleteDir(homeVimDirPath)
+
+        self.vimSwitch.main(argv2)
+
+        # Assert .vimrc changes saved
+        cachedVimrcFilePath = self.getTestPath('.vimswitch/test.vimrc/.vimrc')
+        cachedVimrcContents = diskIo.getFileContents(cachedVimrcFilePath)
+        self.assertEqual(cachedVimrcContents, '" updated vimrc data')
+        # Assert .vim dir deleted
+        cachedVimDirPath = self.getTestPath('.vimswitch/test.vimrc/.vim')
+        self.assertFalse(diskIo.anyExists(cachedVimDirPath))
+        # TODO: Assert stdout
+
     def test_switchProfile_ignoresNonProfileFiles(self):
         # We will check that the following files and dirs still exist after
         # switching profiles

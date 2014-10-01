@@ -62,6 +62,26 @@ class TestSwitchProfileAction(FileSystemTestCase):
         cachedVimDirPath = os.path.join(self.app.profileCache.getProfileLocation(defaultProfile), '.vim')
         self.assertTrue(self.app.diskIo.dirExists(cachedVimDirPath))
 
+    def test_switchToProfile_updatesProfileInCache(self):
+        self.switchProfileAction.switchToProfile(self.profile)
+        # Now we make changes to the profile
+        vimrcPath = self.getTestPath('.vimrc')
+        vimDirPath = self.getTestPath('.vim')
+        self.app.diskIo.createFile(vimrcPath, '" updated vimrc')  # Edit file
+        self.app.diskIo.deleteDir(vimDirPath)  # Delete dir
+        defaultProfile = self.app.settings.defaultProfile
+
+        self.switchProfileAction.switchToProfile(defaultProfile)
+
+        # Assert .vimrc updated
+        cachedVimrcPath = os.path.join(self.app.profileCache.getProfileLocation(self.profile), '.vimrc')
+        expectedVimrc = '" updated vimrc'
+        actualVimrc = self.app.diskIo.getFileContents(cachedVimrcPath)
+        self.assertEqual(expectedVimrc, actualVimrc)
+        # Assert .vim deleted
+        cachedVimDirPath = os.path.join(self.app.profileCache.getProfileLocation(defaultProfile), '.vim')
+        self.assertFalse(self.app.diskIo.dirExists(cachedVimDirPath))
+
     def test_switchToProfile_setsCurrentProfile(self):
         self.assertNotEqual(self.app.settings.currentProfile, self.profile)
 

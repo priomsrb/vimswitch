@@ -13,16 +13,17 @@ class SwitchProfileAction:
         self.profileRetriever = profileRetriever
 
     def switchToProfile(self, profile):
-        self._createDefaultProfile()
+        self._saveCurrentProfile()
         self._retrieveProfile(profile)
         self.profileCopier.copyToHome(profile)
         self.settings.currentProfile = profile
         print('Switched to profile: %s' % profile.name)
 
-    def _createDefaultProfile(self):
-        defaultProfile = self.settings.defaultProfile
-        if not self.profileCache.contains(defaultProfile):
-            self.profileCopier.copyFromHome(defaultProfile)
+    def _saveCurrentProfile(self):
+        currentProfile = self.settings.currentProfile
+        if currentProfile is None:
+            currentProfile = self.settings.defaultProfile
+        self.profileCopier.copyFromHome(currentProfile)
 
     def _retrieveProfile(self, profile):
         if not self.profileCache.contains(profile):

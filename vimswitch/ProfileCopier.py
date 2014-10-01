@@ -23,8 +23,8 @@ class ProfileCopier:
 
     def copyFromHome(self, profile):
         """
-        Copies the active profile data at home to a specified profile in cache
-        (usually 'default')
+        Copies the active profile data at home to a specified profile in cache.
+        If the profile already exists in cache, it gets overwritten.
         """
         if not self.profileCache.contains(profile):
             self.profileCache.createEmptyProfile(profile)
