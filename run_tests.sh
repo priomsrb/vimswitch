@@ -8,6 +8,7 @@
 #   outside the local machine. For example downloading a file from github. 
 #   Avoid running these tests frequently; we want to be nice to others :)
 # COVERAGE = Checks the test coverage after running ALL tests
+# CUSTOM = Use this for running specific tests
 TEST_TYPE=BASIC
 
 while true; do
@@ -18,16 +19,19 @@ while true; do
     case $TEST_TYPE in
     "BASIC")
         # Add --nocapture to show stdout
-        nosetests -a "!slow,!external"
+        nosetests -a "!slow,!external,!skip"
         ;;
     "ALL")
-        nosetests -a "!external"
+        nosetests -a "!external,!skip"
         ;;
     "EXTERNAL")
-        nosetests -a "external"
+        nosetests -a "external,!skip"
         ;;
     "COVERAGE")
-        nosetests -a "!external" --with-coverage --cover-package=vimswitch --cover-branches
+        nosetests -a "!external,!skip" --with-coverage --cover-package=vimswitch --cover-branches
+        ;;
+    "CUSTOM")
+        #nosetests vimswitch.test.<module>.<class>
         ;;
     esac
 

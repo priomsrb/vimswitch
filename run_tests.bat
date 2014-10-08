@@ -10,7 +10,7 @@ cls
 ::   outside the local machine. For example downloading a file from github. 
 ::   Avoid running these tests frequently; we want to be nice to others :)
 :: COVERAGE = Checks the test coverage after running ALL tests
-:: ONLY = Use this for running a specific test
+:: CUSTOM = Use this for running specific tests
 
 set TEST_TYPE=BASIC
 
@@ -30,7 +30,7 @@ nosetests -a "external,!skip"
 if "%TEST_TYPE%"=="COVERAGE" (
 nosetests -a "!external,!skip" --with-coverage --cover-package=vimswitch --cover-branches
 )
-if "%TEST_TYPE%"=="ONLY" (
+if "%TEST_TYPE%"=="CUSTOM" (
 rem nosetests vimswitch.test.<module>.<class>
 )
 
