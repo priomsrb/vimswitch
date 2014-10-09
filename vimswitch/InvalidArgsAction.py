@@ -1,6 +1,8 @@
 class InvalidArgsAction():
+    def __init__(self, errorMessage, helpText):
+        self.errorMessage = errorMessage
+        self.helpText = helpText
+
     def execute(self):
-        message = """
-Invalid arguments. Use `vimswitch myuser/myrepo` to switch profiles.
-"""
-        print(message.strip())
+        print(self.errorMessage)
+        print(self.helpText)

@@ -38,11 +38,13 @@ class TestActionResolver(BaseTestCase):
     @patch('vimswitch.ActionResolver.InvalidArgsAction')
     def test_doActions_resolvesInvalidArgsAction(self, mock):
         self.commandLineParser.action = 'invalidArgs'
+        self.commandLineParser.errorMessage = 'testErrorMessage'
+        self.commandLineParser.helpText = 'testHelpText'
 
         self.actionResolver.doActions()
 
-        invalidArgsAction = mock.return_value
-        self.assertTrue(invalidArgsAction.execute.called)
+        invalidArgsAction = mock
+        invalidArgsAction.assert_called_with('testErrorMessage', 'testHelpText')
 
     @patch('vimswitch.ActionResolver.InvalidArgsAction')
     def test_doActions_unknownAction_executesInvalidArgsAction(self, mock):

@@ -25,6 +25,8 @@ class TestVimSwitch(FileSystemTestCase):
         self.vimSwitch = VimSwitch(self.app)
         self.vimSwitch.raiseExceptions = True
 
+    # Switch Profile
+
     def test_switchProfile_createsApplicationDirs(self):
         argv = ['./vimswitch', 'test/vimrc']
 
@@ -97,7 +99,7 @@ class TestVimSwitch(FileSystemTestCase):
         # Switch to an initial profile
         self.vimSwitch.main(argv1)
         self.resetApplication()
-        self.resetIo(stdout)
+        self.resetStdout(stdout)
 
         # Now switch to another profile
         exitCode = self.vimSwitch.main(argv2)
@@ -127,7 +129,7 @@ class TestVimSwitch(FileSystemTestCase):
         self.resetApplication()
         self.vimSwitch.main(argv2)
         self.resetApplication()
-        self.resetIo(stdout)
+        self.resetStdout(stdout)
 
         # Switch back to the first profile
         exitCode = self.vimSwitch.main(argv3)
@@ -227,7 +229,7 @@ class TestVimSwitch(FileSystemTestCase):
         argv2 = ['./vimswitch', 'default']
         self.vimSwitch.main(argv1)
         self.resetApplication()
-        self.resetIo(stdout)
+        self.resetStdout(stdout)
         homeVimrcFilePath = self.getTestPath('.vimrc')
         homeVimDirPath = self.getTestPath('.vim')
         diskIo = self.app.diskIo
@@ -314,13 +316,21 @@ class TestVimSwitch(FileSystemTestCase):
         self.assertEqual(downloadedVimrcContents, '" test vimrc data')
         self.assertTrue(diskIo.dirExists(downloadedVimDirPath))
 
+    # Update profile
+
+    def test_updateProfile(self):
+        # TODO: write test
+        pass
+
+    # Show current profile
+
     @patch('sys.stdout', new_callable=StringIO)
     def test_noArguments_showsCurrentProfile(self, stdout):
         argv1 = ['./vimswitch', 'test/vimrc']
         argv2 = ['./vimswitch']
         self.vimSwitch.main(argv1)  # Sets current profile to test/vimrc
         self.resetApplication()
-        self.resetIo(stdout)
+        self.resetStdout(stdout)
 
         exitCode = self.vimSwitch.main(argv2)
 
@@ -343,6 +353,34 @@ class TestVimSwitch(FileSystemTestCase):
         """)
 
     @patch('sys.stdout', new_callable=StringIO)
+    def test_help(self, stdout):
+        argvs = [
+            ['./vimswitch', '-h'],
+            ['./vimswitch', '--help']
+        ]
+
+        for argv in argvs:
+            exitCode = self.vimSwitch.main(argv)
+
+            self.assertEqual(exitCode, -1, stdout.getvalue())
+            # Assert stdout
+            helpRegex = """
+                usage: vimswitch [-h] [-u] [profile]
+
+                positional arguments:
+                  profile
+
+                optional arguments:
+                  -h, --help    show this help message and exit
+                  -u, --update
+            """
+            helpRegex = helpRegex.replace('[', r'\[')
+            helpRegex = helpRegex.replace(']', r'\]')
+            self.assertStdout(stdout, helpRegex)
+            self.resetApplication()
+            self.resetStdout(stdout)
+
+    @patch('sys.stdout', new_callable=StringIO)
     def test_tooManyArgs_showsErrorMessage(self, stdout):
         argv = ['./vimswitch', 'test/vimrc', 'extra_argument']
 
@@ -351,10 +389,12 @@ class TestVimSwitch(FileSystemTestCase):
         self.assertEqual(exitCode, -1, stdout.getvalue())
         # Assert stdout
         self.assertStdout(stdout, """
-            Invalid arguments. Use `vimswitch myuser/myrepo` to switch profiles.
+            unrecognized arguments: extra_argument
+            usage: vimswitch .*
+            .*
         """)
 
     # Helpers
-    def resetIo(self, io):
+    def resetStdout(self, io):
         io.seek(0)
         io.truncate(0)

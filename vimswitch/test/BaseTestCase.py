@@ -1,5 +1,6 @@
-import unittest
+import re
 import textwrap
+import unittest
 
 
 class BaseTestCase(unittest.TestCase):
@@ -18,8 +19,11 @@ class BaseTestCase(unittest.TestCase):
         regexp = textwrap.dedent(regexp)
         regexp = regexp.strip()
         regexp = '^' + regexp + '$'
+        regexp = re.compile(regexp, re.DOTALL)
+
         self.assertRegexpMatches(string, regexp)
 
-    def assertStdout(self, stdout, regex):
-        "Asserts that the `stdout` io stream matches `regex`"
-        self.assertMultilineRegexpMatches(stdout.getvalue(), regex)
+    def assertStdout(self, stdout, regexp):
+        "Asserts that the `stdout` io stream matches `regexp`"
+        stdoutText = stdout.getvalue().strip()
+        self.assertMultilineRegexpMatches(stdoutText, regexp)

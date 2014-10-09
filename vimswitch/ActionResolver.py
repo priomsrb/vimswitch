@@ -19,7 +19,10 @@ class ActionResolver:
             showCurrentProfileAction = createShowCurrentProfileAction(self.app)
             showCurrentProfileAction.execute()
         else:
-            InvalidArgsAction().execute()
+            errorMessage = self.commandLineParser.errorMessage
+            helpText = self.commandLineParser.helpText
+            invalidArgsAction = InvalidArgsAction(errorMessage, helpText)
+            invalidArgsAction.execute()
             self.exitCode = -1
 
 
