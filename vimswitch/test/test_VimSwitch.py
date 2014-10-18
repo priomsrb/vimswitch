@@ -142,11 +142,8 @@ class TestVimSwitch(FileSystemTestCase):
 
         self.assertEqual(exitCode, 0)
         # Assert home profile is now empty
-        diskIo = self.app.diskIo
-        homeVimrcFilePath = self.getTestPath('.vimrc')
-        homeVimDirPath = self.getTestPath('.vim')
-        self.assertFalse(diskIo.anyExists(homeVimrcFilePath))
-        self.assertFalse(diskIo.anyExists(homeVimDirPath))
+        self.assertPathDoesNotExist('.vimrc')
+        self.assertPathDoesNotExist('.vim')
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_switchProfile_switchFromReadOnlyProfileData(self, stdout):
@@ -168,8 +165,7 @@ class TestVimSwitch(FileSystemTestCase):
         self.assertFileContents('.vimrc', '" test vimrc data')
         self.assertDirExists('.vim')
         # Assert home profile no longer contains read-only file
-        oldDummyPluginPath = self.getTestPath('.vim/plugin/dummy_plugin.vim')
-        self.assertFalse(diskIo.anyExists(oldDummyPluginPath))
+        self.assertPathDoesNotExist('.vim/plugin/dummy_plugin.vim')
         # Assert stdout
         self.assertStdout(stdout, """
             Saving profile: default
@@ -198,8 +194,7 @@ class TestVimSwitch(FileSystemTestCase):
         # Assert .vimrc changes saved
         self.assertFileContents('.vimswitch/test.vimrc/.vimrc', '" updated vimrc data')
         # Assert .vim dir deleted
-        cachedVimDirPath = self.getTestPath('.vimswitch/test.vimrc/.vim')
-        self.assertFalse(diskIo.anyExists(cachedVimDirPath))
+        self.assertPathDoesNotExist('.vimswitch/test.vimrc/.vim')
         # Assert stdout
         self.assertStdout(stdout, """
             Saving profile: test/vimrc
@@ -250,11 +245,8 @@ class TestVimSwitch(FileSystemTestCase):
 
         self.assertEqual(exitCode, 0)
         # Assert windows profile files are deleted
-        diskIo = self.app.diskIo
-        windowsVimrcFilePath = self.getTestPath('_vimrc')
-        windowsVimDirPath = self.getTestPath('_vim')
-        self.assertFalse(diskIo.anyExists(windowsVimrcFilePath))
-        self.assertFalse(diskIo.anyExists(windowsVimDirPath))
+        self.assertPathDoesNotExist('_vimrc')
+        self.assertPathDoesNotExist('_vim')
         # Assert windows profile moved to cache
         self.assertFileContents('.vimswitch/default/_vimrc', '" home vimrc data')
         self.assertDirExists('.vimswitch/default/_vim')
@@ -478,3 +470,8 @@ class TestVimSwitch(FileSystemTestCase):
         diskIo = self.app.diskIo
         path = self.getTestPath(path)
         self.assertTrue(diskIo.isDirEmpty(path))
+
+    def assertPathDoesNotExist(self, path):
+        diskIo = self.app.diskIo
+        path = self.getTestPath(path)
+        self.assertFalse(diskIo.anyExists(path))
