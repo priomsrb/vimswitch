@@ -93,13 +93,15 @@ class TestFileDownloader(FileSystemTestCase):
     # FileDownloader._getDownloadFilename
 
     def test_getDownloadFilename_parsesUrl(self):
-        url = 'http://example.com/foo/bar/file.txt?q=1'
+        url = 'http://example.com/foo/bar/url_filename.txt?q=1'
         headers = Message()
-        filename = self.fileDownloader._getDownloadFilename(url, headers)
-        self.assertEqual(filename, 'file.txt')
 
-    def test_getDownloadFilename_parsesHeader(self):
-        url = ''
+        filename = self.fileDownloader._getDownloadFilename(url, headers)
+
+        self.assertEqual(filename, 'url_filename.txt')
+
+    def test_getDownloadFilename_parsesHeaderFirst(self):
+        url = 'http://example.com/foo/bar/url_filename.txt?q=1'
         headers = Message()
         headers['Server'] = 'SimpleHTTP/0.6 Python/2.7.5'
         headers['Date'] = 'Tue, 09 Sep 2014 02:51:53 GMT'
@@ -107,9 +109,26 @@ class TestFileDownloader(FileSystemTestCase):
         headers['Content-Length'] = '9'
         headers['Last-Modified'] = 'Mon, 08 Sep 2014 23:53:51 GMT'
         # content-disposition should specify the filename
-        headers['content-disposition'] = 'attachment; filename=file.txt'
+        headers['content-disposition'] = 'attachment; filename=header_filename.txt'
+
         filename = self.fileDownloader._getDownloadFilename(url, headers)
-        self.assertEqual(filename, 'file.txt')
+
+        self.assertEqual(filename, 'header_filename.txt')
+
+    def test_getDownloadFilename_invalidHeader_usesUrl(self):
+        url = 'http://example.com/foo/bar/url_filename.txt?q=1'
+        headers = Message()
+        headers['Server'] = 'SimpleHTTP/0.6 Python/2.7.5'
+        headers['Date'] = 'Tue, 09 Sep 2014 02:51:53 GMT'
+        headers['Content-type'] = 'text/plain'
+        headers['Content-Length'] = '9'
+        headers['Last-Modified'] = 'Mon, 08 Sep 2014 23:53:51 GMT'
+        # content-disposition should specify the filename
+        headers['content-disposition'] = 'malformed_section'
+
+        filename = self.fileDownloader._getDownloadFilename(url, headers)
+
+        self.assertEqual(filename, 'url_filename.txt')
 
     # Helpers
 
