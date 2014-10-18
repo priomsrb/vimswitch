@@ -1,24 +1,27 @@
-from .Settings import getSettings
+from .Action import Action
 from .ProfileCache import getProfileCache
 from .ProfileCopier import getProfileCopier
 from .ProfileRetriever import getProfileRetriever
+from .Settings import getSettings
 
 
-class SwitchProfileAction:
+class SwitchProfileAction(Action):
 
     def __init__(self, settings, profileCache, profileCopier, profileRetriever):
+        Action.__init__(self)
         self.settings = settings
         self.profileCache = profileCache
         self.profileCopier = profileCopier
         self.profileRetriever = profileRetriever
         self.update = False
+        self.profile = None
 
-    def switchToProfile(self, profile):
+    def execute(self):
         self._saveCurrentProfile()
-        self._retrieveProfile(profile)
-        self.profileCopier.copyToHome(profile)
-        self.settings.currentProfile = profile
-        print('Switched to profile: %s' % profile.name)
+        self._retrieveProfile(self.profile)
+        self.profileCopier.copyToHome(self.profile)
+        self.settings.currentProfile = self.profile
+        print('Switched to profile: %s' % self.profile.name)
 
     def _saveCurrentProfile(self):
         currentProfile = self._getCurrentProfile()

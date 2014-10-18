@@ -1,4 +1,4 @@
-from .InvalidArgsAction import InvalidArgsAction
+from .InvalidArgsAction import createInvalidArgsAction
 from .ShowCurrentProfileAction import createShowCurrentProfileAction
 from .SwitchProfileAction import createSwitchProfileAction
 from .UpdateProfileAction import createUpdateProfileAction
@@ -12,24 +12,23 @@ class ActionResolver:
         self.exitCode = 0
 
     def doActions(self):
-        action = self.commandLineParser.action
-        if action == 'switchProfile':
-            switchProfileAction = createSwitchProfileAction(self.app)
-            switchProfileAction.switchToProfile(self.commandLineParser.profile)
-        elif action == 'updateProfile':
-            updateProfileAction = createUpdateProfileAction(self.app)
-            updateProfileAction.profile = self.commandLineParser.profile
-            updateProfileAction.execute()
-            self.exitCode = updateProfileAction.exitCode
-        elif action == 'showCurrentProfile':
-            showCurrentProfileAction = createShowCurrentProfileAction(self.app)
-            showCurrentProfileAction.execute()
+        actionString = self.commandLineParser.action
+
+        if actionString == 'switchProfile':
+            action = createSwitchProfileAction(self.app)
+            action.profile = self.commandLineParser.profile
+        elif actionString == 'updateProfile':
+            action = createUpdateProfileAction(self.app)
+            action.profile = self.commandLineParser.profile
+        elif actionString == 'showCurrentProfile':
+            action = createShowCurrentProfileAction(self.app)
         else:
-            errorMessage = self.commandLineParser.errorMessage
-            helpText = self.commandLineParser.helpText
-            invalidArgsAction = InvalidArgsAction(errorMessage, helpText)
-            invalidArgsAction.execute()
-            self.exitCode = -1
+            action = createInvalidArgsAction(self.app)
+            action.errorMessage = self.commandLineParser.errorMessage
+            action.helpText = self.commandLineParser.helpText
+
+        action.execute()
+        self.exitCode = action.exitCode
 
 
 def getActionResolver(app):

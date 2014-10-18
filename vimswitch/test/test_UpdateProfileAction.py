@@ -20,7 +20,8 @@ class TestUpdateProfileAction(BaseTestCase):
 
         self.updateProfileAction.execute()
 
-        self.switchProfileAction.switchToProfile.assert_called_with(Profile('test/vimrc'))
+        self.assertTrue(self.switchProfileAction.execute.called)
+        self.assertEqual(self.switchProfileAction.profile, Profile('test/vimrc'))
         self.assertEqual(self.switchProfileAction.update, True)
 
     def test_execute_withoutProfile_updatesCurrentProfile(self):
@@ -29,7 +30,8 @@ class TestUpdateProfileAction(BaseTestCase):
 
         self.updateProfileAction.execute()
 
-        self.switchProfileAction.switchToProfile.assert_called_with(Profile('test/currentProfile'))
+        self.assertTrue(self.switchProfileAction.execute.called)
+        self.assertEqual(self.switchProfileAction.profile, Profile('test/currentProfile'))
         self.assertEqual(self.switchProfileAction.update, True)
 
     @patch('sys.stdout', new_callable=StringIO)
@@ -38,6 +40,6 @@ class TestUpdateProfileAction(BaseTestCase):
 
         self.updateProfileAction.execute()
 
-        self.assertFalse(self.switchProfileAction.switchToProfile.called)
+        self.assertFalse(self.switchProfileAction.execute.called)
         self.assertEqual(self.updateProfileAction.exitCode, -1)
         self.assertStdout(stdout, 'Cannot update default profile')

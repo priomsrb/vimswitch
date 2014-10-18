@@ -1,8 +1,10 @@
+from .Action import Action
 from .Settings import getSettings
 
 
-class ShowCurrentProfileAction():
+class ShowCurrentProfileAction(Action):
     def __init__(self, settings):
+        Action.__init__(self)
         self.settings = settings
 
     def execute(self):

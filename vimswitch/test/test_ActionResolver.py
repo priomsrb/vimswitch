@@ -24,7 +24,8 @@ class TestActionResolver(BaseTestCase):
         self.actionResolver.doActions()
 
         switchProfileAction = mock.return_value
-        switchProfileAction.switchToProfile.assert_called_with(self.profile)
+        self.assertEqual(switchProfileAction.profile, self.profile)
+        self.assertTrue(switchProfileAction.execute.called)
 
     @patch('vimswitch.UpdateProfileAction.UpdateProfileAction')
     def test_doActions_resolvesUpdateProfileAction(self, mock):
@@ -37,7 +38,7 @@ class TestActionResolver(BaseTestCase):
         self.assertEqual(updateProfileAction.profile, self.profile)
         self.assertTrue(updateProfileAction.execute.called)
 
-    @patch('vimswitch.ActionResolver.createShowCurrentProfileAction')
+    @patch('vimswitch.ShowCurrentProfileAction.ShowCurrentProfileAction')
     def test_doActions_resolvesShowCurrentProfileAction(self, mock):
         self.commandLineParser.action = 'showCurrentProfile'
 
@@ -46,7 +47,7 @@ class TestActionResolver(BaseTestCase):
         showCurrentProfileAction = mock.return_value
         self.assertTrue(showCurrentProfileAction.execute.called)
 
-    @patch('vimswitch.ActionResolver.InvalidArgsAction')
+    @patch('vimswitch.InvalidArgsAction.InvalidArgsAction')
     def test_doActions_resolvesInvalidArgsAction(self, mock):
         self.commandLineParser.action = 'invalidArgs'
         self.commandLineParser.errorMessage = 'testErrorMessage'
@@ -54,10 +55,12 @@ class TestActionResolver(BaseTestCase):
 
         self.actionResolver.doActions()
 
-        invalidArgsAction = mock
-        invalidArgsAction.assert_called_with('testErrorMessage', 'testHelpText')
+        invalidArgsAction = mock.return_value
+        self.assertTrue(invalidArgsAction.execute.called)
+        self.assertEqual(invalidArgsAction.errorMessage, 'testErrorMessage')
+        self.assertEqual(invalidArgsAction.helpText, 'testHelpText')
 
-    @patch('vimswitch.ActionResolver.InvalidArgsAction')
+    @patch('vimswitch.InvalidArgsAction.InvalidArgsAction')
     def test_doActions_unknownAction_executesInvalidArgsAction(self, mock):
         self.commandLineParser.action = 'unknownAction'
 
@@ -65,3 +68,14 @@ class TestActionResolver(BaseTestCase):
 
         invalidArgsAction = mock.return_value
         self.assertTrue(invalidArgsAction.execute.called)
+
+    @patch('vimswitch.UpdateProfileAction.UpdateProfileAction')
+    def test_doActions_setsExitCode(self, mock):
+        self.commandLineParser.action = 'updateProfile'
+        self.commandLineParser.profile = self.profile
+        action = mock.return_value
+        action.exitCode = -1
+
+        self.actionResolver.doActions()
+
+        self.assertEqual(self.actionResolver.exitCode, -1)

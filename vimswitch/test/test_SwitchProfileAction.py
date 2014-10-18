@@ -22,23 +22,29 @@ class TestSwitchProfileAction(FileSystemTestCase):
         self.profile = Profile('test/vimrc')
 
     def test_switchToProfile_defaultProfileDoesNotExist_createsDefaultProfile(self):
-        self.switchProfileAction.switchToProfile(self.profile)
+        self.switchProfileAction.profile = self.profile
+
+        self.switchProfileAction.execute()
 
         defaultProfile = self.app.settings.defaultProfile
         self.assertTrue(self.app.profileCache.contains(defaultProfile))
 
     def test_switchToProfile_profileNotInCache_downloadsProfile(self):
-        self.switchProfileAction.switchToProfile(self.profile)
+        self.switchProfileAction.profile = self.profile
+        self.switchProfileAction.execute()
         self.assertTrue(self.app.profileCache.contains(self.profile))
 
     def test_switchToProfile_profileInCache_doesNotDownloadProfile(self):
         self.app.fileDownloader.download = MagicMock(side_effect=AssertionError('Profile should not be downloaded'))
         self.app.profileCache.createEmptyProfile(self.profile)
+        self.switchProfileAction.profile = self.profile
 
-        self.switchProfileAction.switchToProfile(self.profile)
+        self.switchProfileAction.execute()
 
     def test_switchToProfile_copiesProfileToHome(self):
-        self.switchProfileAction.switchToProfile(self.profile)
+        self.switchProfileAction.profile = self.profile
+
+        self.switchProfileAction.execute()
 
         expectedVimrc = '" test vimrc data'
         actualVimrc = self.app.diskIo.getFileContents(self.getTestPath('.vimrc'))
@@ -51,8 +57,9 @@ class TestSwitchProfileAction(FileSystemTestCase):
         vimDirPath = self.getTestPath('.vim')
         self.app.diskIo.createFile(vimrcPath, '" default vimrc')
         self.app.diskIo.createDir(vimDirPath)
+        self.switchProfileAction.profile = self.profile
 
-        self.switchProfileAction.switchToProfile(self.profile)
+        self.switchProfileAction.execute()
 
         defaultProfile = self.app.settings.defaultProfile
         cachedVimrcPath = os.path.join(self.app.profileCache.getProfileLocation(defaultProfile), '.vimrc')
@@ -63,15 +70,17 @@ class TestSwitchProfileAction(FileSystemTestCase):
         self.assertTrue(self.app.diskIo.dirExists(cachedVimDirPath))
 
     def test_switchToProfile_savesProfileChangesToCache(self):
-        self.switchProfileAction.switchToProfile(self.profile)
+        self.switchProfileAction.profile = self.profile
+        self.switchProfileAction.execute()
         # Now we make changes to the profile
         vimrcPath = self.getTestPath('.vimrc')
         vimDirPath = self.getTestPath('.vim')
         self.app.diskIo.createFile(vimrcPath, '" updated vimrc')  # Edit file
         self.app.diskIo.deleteDir(vimDirPath)  # Delete dir
         defaultProfile = self.app.settings.defaultProfile
+        self.switchProfileAction.profile = defaultProfile
 
-        self.switchProfileAction.switchToProfile(defaultProfile)
+        self.switchProfileAction.execute()
 
         # Assert .vimrc updated
         cachedVimrcPath = os.path.join(self.app.profileCache.getProfileLocation(self.profile), '.vimrc')
@@ -83,12 +92,14 @@ class TestSwitchProfileAction(FileSystemTestCase):
         self.assertFalse(self.app.diskIo.dirExists(cachedVimDirPath))
 
     def test_switchToProfile_updateFlagSet_updatesCachedProfile(self):
-        self.switchProfileAction.switchToProfile(self.profile)
+        self.switchProfileAction.profile = self.profile
+        self.switchProfileAction.execute()
         # Update the profile on the internet by using the version at fake_internet2
         self.app.fileDownloader.root = self.getDataPath('fake_internet2')
         self.switchProfileAction.update = True
+        self.switchProfileAction.profile = self.profile
 
-        self.switchProfileAction.switchToProfile(self.profile)
+        self.switchProfileAction.execute()
 
         self.assertFileContents('.vimrc', '" updated vimrc data')
         self.assertFileContents('.vimswitch/test.vimrc/.vimrc', '" updated vimrc data')
@@ -97,14 +108,17 @@ class TestSwitchProfileAction(FileSystemTestCase):
 
     def test_switchToProfile_setsCurrentProfile(self):
         self.assertNotEqual(self.app.settings.currentProfile, self.profile)
+        self.switchProfileAction.profile = self.profile
 
-        self.switchProfileAction.switchToProfile(self.profile)
+        self.switchProfileAction.execute()
 
         self.assertEqual(self.app.settings.currentProfile, self.profile)
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_switchToProfile_prints(self, stdout):
-        self.switchProfileAction.switchToProfile(self.profile)
+        self.switchProfileAction.profile = self.profile
+
+        self.switchProfileAction.execute()
 
         self.assertStdout(stdout, """
             Saving profile: default

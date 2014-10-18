@@ -1,13 +1,14 @@
+from .Action import Action
 from .Settings import getSettings
 from .SwitchProfileAction import createSwitchProfileAction
 
 
-class UpdateProfileAction:
+class UpdateProfileAction(Action):
     def __init__(self, settings, switchProfileAction):
+        Action.__init__(self)
         self.settings = settings
         self.switchProfileAction = switchProfileAction
         self.profile = None
-        self.exitCode = 0
 
     def execute(self):
         self.profile = self._getProfile()
@@ -18,7 +19,8 @@ class UpdateProfileAction:
             return
 
         self.switchProfileAction.update = True
-        self.switchProfileAction.switchToProfile(self.profile)
+        self.switchProfileAction.profile = self.profile
+        self.switchProfileAction.execute()
 
     def _getProfile(self):
         if self.profile is None:
