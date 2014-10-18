@@ -38,15 +38,10 @@ class TestVimSwitch(FileSystemTestCase):
 
         self.assertEqual(exitCode, 0)
         # Assert default profile is created
-        diskIo = self.app.diskIo
-        defaultVimrcFilePath = self.getTestPath('.vimswitch/default/.vimrc')
-        defaultVimrcContents = diskIo.getFileContents(defaultVimrcFilePath)
-        self.assertEqual(defaultVimrcContents, '" home vimrc data')
+        self.assertFileContents('.vimswitch/default/.vimrc', '" home vimrc data')
         self.assertDirExists('.vimswitch/default/.vim')
         # Assert home profile is replaced by downloaded profile
-        downloadedVimrcFilePath = self.getTestPath('.vimrc')
-        downloadedVimrcContents = diskIo.getFileContents(downloadedVimrcFilePath)
-        self.assertEqual(downloadedVimrcContents, '" test vimrc data')
+        self.assertFileContents('.vimrc', '" test vimrc data')
         self.assertDirExists('.vim')
         # Assert stdout
         self.assertStdout(stdout, """
@@ -65,10 +60,7 @@ class TestVimSwitch(FileSystemTestCase):
 
         self.assertEqual(exitCode, -1, stdout.getvalue())
         # Assert home profile is unchanged
-        downloadedVimrcFilePath = self.getTestPath('.vimrc')
-        diskIo = self.app.diskIo
-        downloadedVimrcContents = diskIo.getFileContents(downloadedVimrcFilePath)
-        self.assertEqual(downloadedVimrcContents, '" home vimrc data')
+        self.assertFileContents('.vimrc', '" home vimrc data')
         self.assertDirExists('.vim')
         # Assert stdout
         self.assertStdout(stdout, """
@@ -91,10 +83,7 @@ class TestVimSwitch(FileSystemTestCase):
 
         self.assertEqual(exitCode, 0, stdout.getvalue())
         # Assert current profile is now test2/vimrc
-        diskIo = self.app.diskIo
-        currentVimrcFilePath = self.getTestPath('.vimrc')
-        currentVimrcContents = diskIo.getFileContents(currentVimrcFilePath)
-        self.assertEqual(currentVimrcContents, '" test2 vimrc data')
+        self.assertFileContents('.vimrc', '" test2 vimrc data')
         self.assertDirExists('.vim')
         # Assert stdout
         self.assertStdout(stdout, """
@@ -120,10 +109,7 @@ class TestVimSwitch(FileSystemTestCase):
 
         self.assertEqual(exitCode, 0, stdout.getvalue())
         # Assert current profile is now test/vimrc
-        diskIo = self.app.diskIo
-        currentVimrcFilePath = self.getTestPath('.vimrc')
-        currentVimrcContents = diskIo.getFileContents(currentVimrcFilePath)
-        self.assertEqual(currentVimrcContents, '" test vimrc data')
+        self.assertFileContents('.vimrc', '" test vimrc data')
         self.assertDirExists('.vim')
         # Assert stdout
         self.assertStdout(stdout, """
@@ -138,13 +124,10 @@ class TestVimSwitch(FileSystemTestCase):
 
         self.assertEqual(exitCode, 0)
         # Assert default profile is created and empty
-        diskIo = self.app.diskIo
         self.assertDirExists('.vimswitch/default')
         self.assertDirEmpty('.vimswitch/default')
         # Assert home profile is replaced by downloaded profile
-        downloadedVimrcFilePath = self.getTestPath('.vimrc')
-        downloadedVimrcContents = diskIo.getFileContents(downloadedVimrcFilePath)
-        self.assertEqual(downloadedVimrcContents, '" test vimrc data')
+        self.assertFileContents('.vimrc', '" test vimrc data')
         self.assertDirExists('.vim')
 
     def test_switchProfile_switchToEmptyDefaultProfile(self):
@@ -178,17 +161,11 @@ class TestVimSwitch(FileSystemTestCase):
 
         self.assertEqual(exitCode, 0, stdout.getvalue())
         # Assert default profile is created
-        defaultVimrcFilePath = self.getTestPath('.vimswitch/default/.vimrc')
-        defaultVimrcContents = diskIo.getFileContents(defaultVimrcFilePath)
-        defaultDummyPluginPath = self.getTestPath('.vimswitch/default/.vim/plugin/dummy_plugin.vim')
-        defaultDummyPluginContents = diskIo.getFileContents(defaultDummyPluginPath)
-        self.assertEqual(defaultVimrcContents, '" home vimrc data')
-        self.assertEqual(defaultDummyPluginContents, '" dummy home vim plugin')
+        self.assertFileContents('.vimswitch/default/.vimrc', '" home vimrc data')
+        self.assertFileContents('.vimswitch/default/.vim/plugin/dummy_plugin.vim', '" dummy home vim plugin')
         self.assertDirExists('.vimswitch/default/.vim')
         # Assert home profile is replaced by downloaded profile
-        downloadedVimrcFilePath = self.getTestPath('.vimrc')
-        downloadedVimrcContents = diskIo.getFileContents(downloadedVimrcFilePath)
-        self.assertEqual(downloadedVimrcContents, '" test vimrc data')
+        self.assertFileContents('.vimrc', '" test vimrc data')
         self.assertDirExists('.vim')
         # Assert home profile no longer contains read-only file
         oldDummyPluginPath = self.getTestPath('.vim/plugin/dummy_plugin.vim')
@@ -219,9 +196,7 @@ class TestVimSwitch(FileSystemTestCase):
         self.vimSwitch.main(argv2)
 
         # Assert .vimrc changes saved
-        cachedVimrcFilePath = self.getTestPath('.vimswitch/test.vimrc/.vimrc')
-        cachedVimrcContents = diskIo.getFileContents(cachedVimrcFilePath)
-        self.assertEqual(cachedVimrcContents, '" updated vimrc data')
+        self.assertFileContents('.vimswitch/test.vimrc/.vimrc', '" updated vimrc data')
         # Assert .vim dir deleted
         cachedVimDirPath = self.getTestPath('.vimswitch/test.vimrc/.vim')
         self.assertFalse(diskIo.anyExists(cachedVimDirPath))
@@ -262,8 +237,7 @@ class TestVimSwitch(FileSystemTestCase):
         self.assertEqual(exitCode, 0)
         # Assert all the non-profile files and dirs still exist
         for filePath in filePaths:
-            content = diskIo.getFileContents(self.getTestPath(filePath))
-            self.assertEqual(content, 'test content')
+            self.assertFileContents(filePath, 'test content')
         for dirPath in dirPaths:
             self.assertDirExists(dirPath)
 
@@ -282,14 +256,10 @@ class TestVimSwitch(FileSystemTestCase):
         self.assertFalse(diskIo.anyExists(windowsVimrcFilePath))
         self.assertFalse(diskIo.anyExists(windowsVimDirPath))
         # Assert windows profile moved to cache
-        cachedVimrcFilePath = self.getTestPath('.vimswitch/default/_vimrc')
-        cachedVimrcContents = diskIo.getFileContents(cachedVimrcFilePath)
-        self.assertEqual(cachedVimrcContents, '" home vimrc data')
+        self.assertFileContents('.vimswitch/default/_vimrc', '" home vimrc data')
         self.assertDirExists('.vimswitch/default/_vim')
         # Assert home profile is replaced by downloaded profile
-        downloadedVimrcFilePath = self.getTestPath('.vimrc')
-        downloadedVimrcContents = diskIo.getFileContents(downloadedVimrcFilePath)
-        self.assertEqual(downloadedVimrcContents, '" test vimrc data')
+        self.assertFileContents('.vimrc', '" test vimrc data')
         self.assertDirExists('.vim')
 
     # Update profile
