@@ -3,4 +3,4 @@ class Action:
         self.exitCode = 0
 
     def execute():
-        pass
+        raise NotImplementedError
