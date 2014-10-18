@@ -17,9 +17,7 @@ class TestVimSwitch(FileSystemTestCase):
     # Switch Profile
 
     def test_switchProfile_createsApplicationDirs(self):
-        argv = ['./vimswitch', 'test/vimrc']
-
-        exitCode = self.vimSwitch.main(argv)
+        exitCode = self.runMain('./vimswitch test/vimrc')
 
         self.assertEqual(exitCode, 0)
         # Assert application dirs exist
@@ -32,9 +30,8 @@ class TestVimSwitch(FileSystemTestCase):
     def test_switchProfile_switchToRemoteProfile(self, stdout):
         self.copyDataToWorkingDir('home/.vimrc', '.vimrc')
         self.copyDataToWorkingDir('home/.vim', '.vim')
-        argv = ['./vimswitch', 'test/vimrc']
 
-        exitCode = self.vimSwitch.main(argv)
+        exitCode = self.runMain('./vimswitch test/vimrc')
 
         self.assertEqual(exitCode, 0)
         # Assert default profile is created
@@ -54,9 +51,8 @@ class TestVimSwitch(FileSystemTestCase):
     def test_switchProfile_switchToNonExistantProfile_showsError(self, stdout):
         self.copyDataToWorkingDir('home/.vimrc', '.vimrc')
         self.copyDataToWorkingDir('home/.vim', '.vim')
-        argv = ['./vimswitch', 'non_existant_profile']
 
-        exitCode = self.vimSwitch.main(argv)
+        exitCode = self.runMain('./vimswitch non_existant_profile')
 
         self.assertEqual(exitCode, -1, stdout.getvalue())
         # Assert home profile is unchanged
@@ -71,15 +67,12 @@ class TestVimSwitch(FileSystemTestCase):
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_switchProfile_switchToAnotherProfile(self, stdout):
-        argv1 = ['./vimswitch', 'test/vimrc']
-        argv2 = ['./vimswitch', 'test2/vimrc']
         # Switch to an initial profile
-        self.vimSwitch.main(argv1)
-        self.resetApplication()
+        self.runMain('./vimswitch test/vimrc')
         self.resetStdout(stdout)
 
         # Now switch to another profile
-        exitCode = self.vimSwitch.main(argv2)
+        exitCode = self.runMain('./vimswitch test2/vimrc')
 
         self.assertEqual(exitCode, 0, stdout.getvalue())
         # Assert current profile is now test2/vimrc
@@ -94,18 +87,13 @@ class TestVimSwitch(FileSystemTestCase):
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_switchProfile_switchToCachedProfile(self, stdout):
-        argv1 = ['./vimswitch', 'test/vimrc']
-        argv2 = ['./vimswitch', 'test2/vimrc']
-        argv3 = ['./vimswitch', 'test/vimrc']
         # Download 2 profiles
-        self.vimSwitch.main(argv1)
-        self.resetApplication()
-        self.vimSwitch.main(argv2)
-        self.resetApplication()
+        self.runMain('./vimswitch test/vimrc')
+        self.runMain('./vimswitch test2/vimrc')
         self.resetStdout(stdout)
 
         # Switch back to the first profile
-        exitCode = self.vimSwitch.main(argv3)
+        exitCode = self.runMain('./vimswitch test/vimrc')
 
         self.assertEqual(exitCode, 0, stdout.getvalue())
         # Assert current profile is now test/vimrc
@@ -118,9 +106,7 @@ class TestVimSwitch(FileSystemTestCase):
         """)
 
     def test_switchProfile_switchFromEmptyDefaultProfile(self):
-        argv = ['./vimswitch', 'test/vimrc']
-
-        exitCode = self.vimSwitch.main(argv)
+        exitCode = self.runMain('./vimswitch test/vimrc')
 
         self.assertEqual(exitCode, 0)
         # Assert default profile is created and empty
@@ -131,14 +117,11 @@ class TestVimSwitch(FileSystemTestCase):
         self.assertDirExists('.vim')
 
     def test_switchProfile_switchToEmptyDefaultProfile(self):
-        argv1 = ['./vimswitch', 'test/vimrc']
-        argv2 = ['./vimswitch', 'default']
         # Switch to non-default profile
-        self.vimSwitch.main(argv1)
-        self.resetApplication()
+        self.runMain('./vimswitch test/vimrc')
 
         # Now switch back to default profile
-        exitCode = self.vimSwitch.main(argv2)
+        exitCode = self.runMain('./vimswitch default')
 
         self.assertEqual(exitCode, 0)
         # Assert home profile is now empty
@@ -152,9 +135,8 @@ class TestVimSwitch(FileSystemTestCase):
         self.copyDataToWorkingDir('home/.vim', '.vim')
         dummyPluginPath = self.getTestPath('.vim/plugin/dummy_plugin.vim')
         diskIo.setReadOnly(dummyPluginPath, True)
-        argv = ['./vimswitch', 'test/vimrc']
 
-        exitCode = self.vimSwitch.main(argv)
+        exitCode = self.runMain('./vimswitch test/vimrc')
 
         self.assertEqual(exitCode, 0, stdout.getvalue())
         # Assert default profile is created
@@ -177,10 +159,7 @@ class TestVimSwitch(FileSystemTestCase):
     def test_switchProfile_savesChangesToCurrentProfile(self, stdout):
         self.copyDataToWorkingDir('home/.vimrc', '.vimrc')
         self.copyDataToWorkingDir('home/.vim', '.vim')
-        argv1 = ['./vimswitch', 'test/vimrc']
-        argv2 = ['./vimswitch', 'default']
-        self.vimSwitch.main(argv1)
-        self.resetApplication()
+        self.runMain('./vimswitch test/vimrc')
         self.resetStdout(stdout)
         homeVimrcFilePath = self.getTestPath('.vimrc')
         homeVimDirPath = self.getTestPath('.vim')
@@ -189,8 +168,9 @@ class TestVimSwitch(FileSystemTestCase):
         diskIo.createFile(homeVimrcFilePath, '" updated vimrc data')
         diskIo.deleteDir(homeVimDirPath)
 
-        self.vimSwitch.main(argv2)
+        exitCode = self.runMain('./vimswitch default')
 
+        self.assertEqual(exitCode, 0, stdout.getvalue())
         # Assert .vimrc changes saved
         self.assertFileContents('.vimswitch/test.vimrc/.vimrc', '" updated vimrc data')
         # Assert .vim dir deleted
@@ -225,9 +205,8 @@ class TestVimSwitch(FileSystemTestCase):
             diskIo.createDir(self.getTestPath(dirPath))
         self.copyDataToWorkingDir('home/.vimrc', '_vimrc')
         self.copyDataToWorkingDir('home/.vim', '_vim')
-        argv = ['./vimswitch', 'test/vimrc']
 
-        exitCode = self.vimSwitch.main(argv)
+        exitCode = self.runMain('./vimswitch test/vimrc')
 
         self.assertEqual(exitCode, 0)
         # Assert all the non-profile files and dirs still exist
@@ -239,9 +218,8 @@ class TestVimSwitch(FileSystemTestCase):
     def test_switchProfile_switchFromWindowsProfile_movesWindowsProfileDataToCache(self):
         self.copyDataToWorkingDir('home/.vimrc', '_vimrc')
         self.copyDataToWorkingDir('home/.vim', '_vim')
-        argv = ['./vimswitch', 'test/vimrc']
 
-        exitCode = self.vimSwitch.main(argv)
+        exitCode = self.runMain('./vimswitch test/vimrc')
 
         self.assertEqual(exitCode, 0)
         # Assert windows profile files are deleted
@@ -264,9 +242,9 @@ class TestVimSwitch(FileSystemTestCase):
         self.fakeInternetRoot = self.getDataPath('fake_internet2')
 
         # Now we update test/vimrc
-        self.runMain('./vimswitch --update test/vimrc')
+        exitCode = self.runMain('./vimswitch --update test/vimrc')
 
-        self.assertEqual(self.exitCode, 0)
+        self.assertEqual(exitCode, 0)
         self.assertFileContents('.vimrc', '" updated vimrc data')
         self.assertFileContents('.vimswitch/test.vimrc/.vimrc', '" updated vimrc data')
         self.assertDirExists('.vimswitch/test.vimrc/.vim')
@@ -285,9 +263,9 @@ class TestVimSwitch(FileSystemTestCase):
         self.fakeInternetRoot = self.getDataPath('fake_internet2')
 
         # Now we update test/vimrc
-        self.runMain('./vimswitch --update test/vimrc')
+        exitCode = self.runMain('./vimswitch --update test/vimrc')
 
-        self.assertEqual(self.exitCode, 0)
+        self.assertEqual(exitCode, 0)
         self.assertFileContents('.vimrc', '" updated vimrc data')
         self.assertFileContents('.vimswitch/test.vimrc/.vimrc', '" updated vimrc data')
         self.assertDirExists('.vimswitch/test.vimrc/.vim')
@@ -305,9 +283,9 @@ class TestVimSwitch(FileSystemTestCase):
         self.fakeInternetRoot = self.getDataPath('fake_internet2')
 
         # Now we update test/vimrc
-        self.runMain('./vimswitch --update')
+        exitCode = self.runMain('./vimswitch --update')
 
-        self.assertEqual(self.exitCode, 0)
+        self.assertEqual(exitCode, 0)
         self.assertFileContents('.vimrc', '" updated vimrc data')
         self.assertFileContents('.vimswitch/test.vimrc/.vimrc', '" updated vimrc data')
         self.assertDirExists('.vimswitch/test.vimrc/.vim')
@@ -319,9 +297,9 @@ class TestVimSwitch(FileSystemTestCase):
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_updateProfile_downloadsUncachedProfile(self, stdout):
-        self.runMain('./vimswitch --update test/vimrc')
+        exitCode = self.runMain('./vimswitch --update test/vimrc')
 
-        self.assertEqual(self.exitCode, 0)
+        self.assertEqual(exitCode, 0)
         self.assertFileContents('.vimrc', '" test vimrc data')
         self.assertFileContents('.vimswitch/test.vimrc/.vimrc', '" test vimrc data')
         self.assertDirExists('.vimswitch/test.vimrc/.vim')
@@ -336,9 +314,9 @@ class TestVimSwitch(FileSystemTestCase):
         self.runMain('./vimswitch test/vimrc')
         self.resetStdout(stdout)
 
-        self.runMain('./vimswitch --update default')
+        exitCode = self.runMain('./vimswitch --update default')
 
-        self.assertEqual(self.exitCode, -1)
+        self.assertEqual(exitCode, -1)
         self.assertFileContents('.vimrc', '" test vimrc data')
         self.assertFileContents('.vimswitch/test.vimrc/.vimrc', '" test vimrc data')
         self.assertDirExists('.vimswitch/test.vimrc/.vim')
@@ -348,9 +326,9 @@ class TestVimSwitch(FileSystemTestCase):
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_updateProfile_withDefaultProfileAndNoArguments_showsError(self, stdout):
-        self.runMain('./vimswitch --update')
+        exitCode = self.runMain('./vimswitch --update')
 
-        self.assertEqual(self.exitCode, -1)
+        self.assertEqual(exitCode, -1)
         self.assertStdout(stdout, """
             Cannot update default profile
         """)
@@ -359,13 +337,10 @@ class TestVimSwitch(FileSystemTestCase):
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_noArguments_showsCurrentProfile(self, stdout):
-        argv1 = ['./vimswitch', 'test/vimrc']
-        argv2 = ['./vimswitch']
-        self.vimSwitch.main(argv1)  # Sets current profile to test/vimrc
-        self.resetApplication()
+        self.runMain('./vimswitch test/vimrc')  # Sets current profile to test/vimrc
         self.resetStdout(stdout)
 
-        exitCode = self.vimSwitch.main(argv2)
+        exitCode = self.runMain('./vimswitch')
 
         self.assertEqual(exitCode, 0, stdout.getvalue())
         # Assert stdout
@@ -375,9 +350,7 @@ class TestVimSwitch(FileSystemTestCase):
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_noArgumentsAndNoCurrentProfile_showsCurrentProfileIsNone(self, stdout):
-        argv = ['./vimswitch']
-
-        exitCode = self.vimSwitch.main(argv)
+        exitCode = self.runMain('./vimswitch')
 
         self.assertEqual(exitCode, 0, stdout.getvalue())
         # Assert stdout
@@ -387,13 +360,13 @@ class TestVimSwitch(FileSystemTestCase):
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_help(self, stdout):
-        argvs = [
-            ['./vimswitch', '-h'],
-            ['./vimswitch', '--help']
+        argsList = [
+            './vimswitch -h',
+            './vimswitch --help'
         ]
 
-        for argv in argvs:
-            exitCode = self.vimSwitch.main(argv)
+        for args in argsList:
+            exitCode = self.runMain(args)
 
             self.assertEqual(exitCode, -1, stdout.getvalue())
             # Assert stdout
@@ -410,14 +383,11 @@ class TestVimSwitch(FileSystemTestCase):
             helpRegex = helpRegex.replace('[', r'\[')
             helpRegex = helpRegex.replace(']', r'\]')
             self.assertStdout(stdout, helpRegex)
-            self.resetApplication()
             self.resetStdout(stdout)
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_tooManyArgs_showsErrorMessage(self, stdout):
-        argv = ['./vimswitch', 'test/vimrc', 'extra_argument']
-
-        exitCode = self.vimSwitch.main(argv)
+        exitCode = self.runMain('./vimswitch test/vimrc extra_argument')
 
         self.assertEqual(exitCode, -1, stdout.getvalue())
         # Assert stdout
@@ -432,7 +402,8 @@ class TestVimSwitch(FileSystemTestCase):
     def runMain(self, args):
         self.resetApplication()
         argv = args.split()
-        self.exitCode = self.vimSwitch.main(argv)
+        exitCode = self.vimSwitch.main(argv)
+        return exitCode
 
     def resetApplication(self):
         """
