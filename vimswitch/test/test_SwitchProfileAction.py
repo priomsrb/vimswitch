@@ -4,7 +4,7 @@ from mock import MagicMock, patch
 from vimswitch.Application import Application
 from vimswitch.Profile import Profile
 from vimswitch.Settings import Settings
-from vimswitch.SwitchProfileAction import getSwitchProfileAction
+from vimswitch.SwitchProfileAction import createSwitchProfileAction
 from vimswitch.six import StringIO
 import os
 
@@ -16,7 +16,7 @@ class TestSwitchProfileAction(FileSystemTestCase):
         self.app = Application()
         self.app.settings = Settings(self.getWorkingDir())
         self.app.fileDownloader = createFakeFileDownloader(self.app, self.getDataPath('fake_internet'))
-        self.switchProfileAction = getSwitchProfileAction(self.app)
+        self.switchProfileAction = createSwitchProfileAction(self.app)
         self.app.diskIo.createDirWithParents(self.app.settings.cachePath)
         self.app.diskIo.createDirWithParents(self.app.settings.downloadsPath)
         self.profile = Profile('test/vimrc')
@@ -62,7 +62,7 @@ class TestSwitchProfileAction(FileSystemTestCase):
         cachedVimDirPath = os.path.join(self.app.profileCache.getProfileLocation(defaultProfile), '.vim')
         self.assertTrue(self.app.diskIo.dirExists(cachedVimDirPath))
 
-    def test_switchToProfile_updatesProfileInCache(self):
+    def test_switchToProfile_savesProfileChangesToCache(self):
         self.switchProfileAction.switchToProfile(self.profile)
         # Now we make changes to the profile
         vimrcPath = self.getTestPath('.vimrc')
@@ -82,6 +82,19 @@ class TestSwitchProfileAction(FileSystemTestCase):
         cachedVimDirPath = os.path.join(self.app.profileCache.getProfileLocation(defaultProfile), '.vim')
         self.assertFalse(self.app.diskIo.dirExists(cachedVimDirPath))
 
+    def test_switchToProfile_updateFlagSet_updatesCachedProfile(self):
+        self.switchProfileAction.switchToProfile(self.profile)
+        # Update the profile on the internet by using the version at fake_internet2
+        self.app.fileDownloader.root = self.getDataPath('fake_internet2')
+        self.switchProfileAction.update = True
+
+        self.switchProfileAction.switchToProfile(self.profile)
+
+        self.assertFileContents('.vimrc', '" updated vimrc data')
+        self.assertFileContents('.vimswitch/test.vimrc/.vimrc', '" updated vimrc data')
+        vimDirPath = self.getTestPath('.vim')
+        self.assertTrue(self.app.diskIo.dirExists(vimDirPath))
+
     def test_switchToProfile_setsCurrentProfile(self):
         self.assertNotEqual(self.app.settings.currentProfile, self.profile)
 
@@ -98,3 +111,11 @@ class TestSwitchProfileAction(FileSystemTestCase):
             Downloading profile from https://github.com/test/vimrc/archive/master.zip
             Switched to profile: test/vimrc
         """)
+
+    # Helpers
+
+    def assertFileContents(self, path, expectedContents):
+        diskIo = self.app.diskIo
+        path = self.getTestPath(path)
+        actualContents = diskIo.getFileContents(path)
+        self.assertEqual(actualContents, expectedContents)

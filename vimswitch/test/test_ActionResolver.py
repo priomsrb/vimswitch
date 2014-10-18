@@ -26,6 +26,17 @@ class TestActionResolver(BaseTestCase):
         switchProfileAction = mock.return_value
         switchProfileAction.switchToProfile.assert_called_with(self.profile)
 
+    @patch('vimswitch.UpdateProfileAction.UpdateProfileAction')
+    def test_doActions_resolvesUpdateProfileAction(self, mock):
+        self.commandLineParser.action = 'updateProfile'
+        self.commandLineParser.profile = self.profile
+
+        self.actionResolver.doActions()
+
+        updateProfileAction = mock.return_value
+        self.assertEqual(updateProfileAction.profile, self.profile)
+        self.assertTrue(updateProfileAction.execute.called)
+
     @patch('vimswitch.ActionResolver.createShowCurrentProfileAction')
     def test_doActions_resolvesShowCurrentProfileAction(self, mock):
         self.commandLineParser.action = 'showCurrentProfile'

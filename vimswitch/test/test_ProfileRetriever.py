@@ -32,8 +32,8 @@ class TestProfileRetriever(FileSystemTestCase):
         vimrcFilePath = self.getTestPath('.vimswitch/test.vimrc/.vimrc')
         actualVimrcContent = self.diskIo.getFileContents(vimrcFilePath)
         expectedVimrcContent = '" test vimrc data'
-        self.assertTrue(self.diskIo.dirExists(vimDirPath))
         self.assertEqual(actualVimrcContent, expectedVimrcContent)
+        self.assertTrue(self.diskIo.dirExists(vimDirPath))
 
     def test_retrieve_profileAlreadyCached_overwritesProfile(self):
         profile = Profile('test/vimrc')
@@ -49,6 +49,7 @@ class TestProfileRetriever(FileSystemTestCase):
         actualVimrcContent = self.diskIo.getFileContents(vimrcFilePath)
         expectedVimrcContent = '" test vimrc data'
         self.assertEqual(actualVimrcContent, expectedVimrcContent)
+        self.assertTrue(self.diskIo.dirExists(vimDirPath))
 
     def test_retrieve_cannotDownloadProfile_raisesError(self):
         profile = Profile('non_existant/vimrc')

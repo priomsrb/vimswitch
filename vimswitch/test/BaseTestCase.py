@@ -27,3 +27,7 @@ class BaseTestCase(unittest.TestCase):
         "Asserts that the `stdout` io stream matches `regexp`"
         stdoutText = stdout.getvalue().strip()
         self.assertMultilineRegexpMatches(stdoutText, regexp)
+
+    def resetStdout(self, stdout):
+        stdout.seek(0)
+        stdout.truncate(0)

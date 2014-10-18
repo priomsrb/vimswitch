@@ -1,0 +1,1 @@
+This directory is used by vimswitch.test.FakeFileDownloader to fake the internet using the filesystem. For example, if FakeFileDownloader is asked to download 'https://github.com/test/vimrc/archive/master.zip', it will copy the file located at 'fake_internet/https.github.com.test.vimrc.archive/master.zip' to the desired path.

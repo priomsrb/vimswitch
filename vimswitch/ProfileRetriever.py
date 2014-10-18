@@ -15,6 +15,10 @@ class ProfileRetriever:
         self.diskIo = diskIo
 
     def retrieve(self, profile):
+        """
+        Downloads a profile into the cache. If the profile already exists, then
+        it is overwritten.
+        """
         url = getProfileUrl(profile)
         print('Downloading profile from %s' % url)
         downloadsPath = self.settings.downloadsPath

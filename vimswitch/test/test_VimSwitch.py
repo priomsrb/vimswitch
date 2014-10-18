@@ -11,19 +11,8 @@ class TestVimSwitch(FileSystemTestCase):
 
     def setUp(self):
         FileSystemTestCase.setUp(self)
+        self.fakeInternetRoot = self.getDataPath('fake_internet')
         self.resetApplication()
-
-    def resetApplication(self):
-        """
-        Resets the state of the application. If you need to call
-        vimswitch.main() multiple times in a test, make sure to call this method
-        after every vimswitch.main().
-        """
-        self.app = Application()
-        self.app.settings = Settings(self.getWorkingDir())
-        self.app.fileDownloader = createFakeFileDownloader(self.app, self.getDataPath('fake_internet'))
-        self.vimSwitch = VimSwitch(self.app)
-        self.vimSwitch.raiseExceptions = True
 
     # Switch Profile
 
@@ -318,9 +307,104 @@ class TestVimSwitch(FileSystemTestCase):
 
     # Update profile
 
-    def test_updateProfile(self):
-        # TODO: write test
-        pass
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_updateProfile_redownloadsCachedProfile(self, stdout):
+        self.runMain('./vimswitch test/vimrc')
+        self.resetStdout(stdout)
+        # Update profile on internet
+        self.fakeInternetRoot = self.getDataPath('fake_internet2')
+
+        # Now we update test/vimrc
+        self.runMain('./vimswitch --update test/vimrc')
+
+        self.assertEqual(self.exitCode, 0)
+        self.assertFileContents('.vimrc', '" updated vimrc data')
+        self.assertFileContents('.vimswitch/test.vimrc/.vimrc', '" updated vimrc data')
+        self.assertDirExists('.vimswitch/test.vimrc/.vim')
+        self.assertStdout(stdout, """
+            Saving profile: test/vimrc
+            Downloading profile from https://github.com/test/vimrc/archive/master.zip
+            Switched to profile: test/vimrc
+        """)
+
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_updateProfile_switchesToProfile(self, stdout):
+        self.runMain('./vimswitch test/vimrc')
+        self.runMain('./vimswitch test2/vimrc')
+        self.resetStdout(stdout)
+        # Update profile on internet
+        self.fakeInternetRoot = self.getDataPath('fake_internet2')
+
+        # Now we update test/vimrc
+        self.runMain('./vimswitch --update test/vimrc')
+
+        self.assertEqual(self.exitCode, 0)
+        self.assertFileContents('.vimrc', '" updated vimrc data')
+        self.assertFileContents('.vimswitch/test.vimrc/.vimrc', '" updated vimrc data')
+        self.assertDirExists('.vimswitch/test.vimrc/.vim')
+        self.assertStdout(stdout, """
+            Saving profile: test2/vimrc
+            Downloading profile from https://github.com/test/vimrc/archive/master.zip
+            Switched to profile: test/vimrc
+        """)
+
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_updateProfile_noArguments_updatesCurrentProfile(self, stdout):
+        self.runMain('./vimswitch test/vimrc')
+        self.resetStdout(stdout)
+        # Update profile on internet
+        self.fakeInternetRoot = self.getDataPath('fake_internet2')
+
+        # Now we update test/vimrc
+        self.runMain('./vimswitch --update')
+
+        self.assertEqual(self.exitCode, 0)
+        self.assertFileContents('.vimrc', '" updated vimrc data')
+        self.assertFileContents('.vimswitch/test.vimrc/.vimrc', '" updated vimrc data')
+        self.assertDirExists('.vimswitch/test.vimrc/.vim')
+        self.assertStdout(stdout, """
+            Saving profile: test/vimrc
+            Downloading profile from https://github.com/test/vimrc/archive/master.zip
+            Switched to profile: test/vimrc
+        """)
+
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_updateProfile_downloadsUncachedProfile(self, stdout):
+        self.runMain('./vimswitch --update test/vimrc')
+
+        self.assertEqual(self.exitCode, 0)
+        self.assertFileContents('.vimrc', '" test vimrc data')
+        self.assertFileContents('.vimswitch/test.vimrc/.vimrc', '" test vimrc data')
+        self.assertDirExists('.vimswitch/test.vimrc/.vim')
+        self.assertStdout(stdout, """
+            Saving profile: default
+            Downloading profile from https://github.com/test/vimrc/archive/master.zip
+            Switched to profile: test/vimrc
+        """)
+
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_updateProfile_withDefaultProfile_showsError(self, stdout):
+        self.runMain('./vimswitch test/vimrc')
+        self.resetStdout(stdout)
+
+        self.runMain('./vimswitch --update default')
+
+        self.assertEqual(self.exitCode, -1)
+        self.assertFileContents('.vimrc', '" test vimrc data')
+        self.assertFileContents('.vimswitch/test.vimrc/.vimrc', '" test vimrc data')
+        self.assertDirExists('.vimswitch/test.vimrc/.vim')
+        self.assertStdout(stdout, """
+            Cannot update default profile
+        """)
+
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_updateProfile_withDefaultProfileAndNoArguments_showsError(self, stdout):
+        self.runMain('./vimswitch --update')
+
+        self.assertEqual(self.exitCode, -1)
+        self.assertStdout(stdout, """
+            Cannot update default profile
+        """)
 
     # Show current profile
 
@@ -395,6 +479,40 @@ class TestVimSwitch(FileSystemTestCase):
         """)
 
     # Helpers
-    def resetStdout(self, io):
-        io.seek(0)
-        io.truncate(0)
+
+    def runMain(self, args):
+        self.resetApplication()
+        argv = args.split()
+        self.exitCode = self.vimSwitch.main(argv)
+
+    def resetApplication(self):
+        """
+        Resets the state of the application. This needs to be called every time
+        before running vimswitch.main()
+        """
+        self.app = Application()
+        self.app.settings = Settings(self.getWorkingDir())
+        self.app.fileDownloader = createFakeFileDownloader(self.app, self.fakeInternetRoot)
+        self.vimSwitch = VimSwitch(self.app)
+        self.vimSwitch.raiseExceptions = True
+
+    def createFile(self, path, contents):
+        diskIo = self.app.diskIo
+        path = self.getTestPath(path)
+        diskIo.createFile(path, contents)
+
+    def deleteDir(self, path):
+        diskIo = self.app.diskIo
+        path = self.getTestPath(path)
+        diskIo.deleteDir(path)
+
+    def assertFileContents(self, path, expectedContents):
+        diskIo = self.app.diskIo
+        path = self.getTestPath(path)
+        actualContents = diskIo.getFileContents(path)
+        self.assertEqual(actualContents, expectedContents)
+
+    def assertDirExists(self, path):
+        diskIo = self.app.diskIo
+        path = self.getTestPath(path)
+        self.assertTrue(diskIo.dirExists(path))

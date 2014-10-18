@@ -11,6 +11,7 @@ class SwitchProfileAction:
         self.profileCache = profileCache
         self.profileCopier = profileCopier
         self.profileRetriever = profileRetriever
+        self.update = False
 
     def switchToProfile(self, profile):
         self._saveCurrentProfile()
@@ -25,7 +26,7 @@ class SwitchProfileAction:
         self.profileCopier.copyFromHome(currentProfile)
 
     def _retrieveProfile(self, profile):
-        if not self.profileCache.contains(profile):
+        if not self.profileCache.contains(profile) or self.update:
             self.profileRetriever.retrieve(profile)
 
     def _getCurrentProfile(self):
@@ -34,10 +35,6 @@ class SwitchProfileAction:
         else:
             currentProfile = self.settings.currentProfile
         return currentProfile
-
-
-def getSwitchProfileAction(app):
-    return app.get('switchProfileAction', createSwitchProfileAction(app))
 
 
 def createSwitchProfileAction(app):
