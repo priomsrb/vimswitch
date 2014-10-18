@@ -130,11 +130,9 @@ class TestVimSwitch(FileSystemTestCase):
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_switchProfile_switchFromReadOnlyProfileData(self, stdout):
-        diskIo = self.app.diskIo
         self.copyDataToWorkingDir('home/.vimrc', '.vimrc')
         self.copyDataToWorkingDir('home/.vim', '.vim')
-        dummyPluginPath = self.getTestPath('.vim/plugin/dummy_plugin.vim')
-        diskIo.setReadOnly(dummyPluginPath, True)
+        self.setReadOnly('.vim/plugin/dummy_plugin.vim', True)
 
         exitCode = self.runMain('./vimswitch test/vimrc')
 
@@ -161,12 +159,9 @@ class TestVimSwitch(FileSystemTestCase):
         self.copyDataToWorkingDir('home/.vim', '.vim')
         self.runMain('./vimswitch test/vimrc')
         self.resetStdout(stdout)
-        homeVimrcFilePath = self.getTestPath('.vimrc')
-        homeVimDirPath = self.getTestPath('.vim')
-        diskIo = self.app.diskIo
         # Make changes to the test/vimrc profile
-        diskIo.createFile(homeVimrcFilePath, '" updated vimrc data')
-        diskIo.deleteDir(homeVimDirPath)
+        self.createFile('.vimrc', '" updated vimrc data')
+        self.deleteDir('.vim')
 
         exitCode = self.runMain('./vimswitch default')
 
@@ -198,11 +193,10 @@ class TestVimSwitch(FileSystemTestCase):
             '.testDir'
             '.vimperator'
         ]
-        diskIo = self.app.diskIo
         for filePath in filePaths:
-            diskIo.createFile(self.getTestPath(filePath), 'test content')
+            self.createFile(filePath, 'test content')
         for dirPath in dirPaths:
-            diskIo.createDir(self.getTestPath(dirPath))
+            self.createDir(dirPath)
         self.copyDataToWorkingDir('home/.vimrc', '_vimrc')
         self.copyDataToWorkingDir('home/.vim', '_vim')
 
@@ -421,10 +415,20 @@ class TestVimSwitch(FileSystemTestCase):
         path = self.getTestPath(path)
         diskIo.createFile(path, contents)
 
+    def createDir(self, path):
+        diskIo = self.app.diskIo
+        path = self.getTestPath(path)
+        diskIo.createDir(path)
+
     def deleteDir(self, path):
         diskIo = self.app.diskIo
         path = self.getTestPath(path)
         diskIo.deleteDir(path)
+
+    def setReadOnly(self, path, readOnly):
+        diskIo = self.app.diskIo
+        path = self.getTestPath(path)
+        diskIo.setReadOnly(path, readOnly)
 
     def assertFileContents(self, path, expectedContents):
         diskIo = self.app.diskIo
