@@ -28,7 +28,7 @@ while true; do
         nosetests -a "external,!skip"
         ;;
     "COVERAGE")
-        nosetests -a "!external,!skip" --with-coverage --cover-package=vimswitch --cover-branches
+        nosetests -a "!external,!skip" --with-coverage --cover-package=vimswitch --cover-branches --cover-html
         ;;
     "CUSTOM")
         #nosetests vimswitch.test.<module>.<class>

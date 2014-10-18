@@ -1,0 +1,8 @@
+# .coveragerc to control coverage.py
+[run]
+branch = True
+include = vimswitch/*
+omit = vimswitch/six.py
+
+[report]
+ignore_errors = True
