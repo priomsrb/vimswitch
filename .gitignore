@@ -3,3 +3,4 @@
 *.ipynb
 cover/
 .coverage
+.tox
