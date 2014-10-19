@@ -16,7 +16,6 @@ class FileSystemSandbox:
     enabled = False
     sandboxRoot = ''
 
-    @classmethod
     def enable(self, sandboxRoot):
         if self.enabled:
             raise RuntimeError('Sandbox already enabled')
@@ -25,7 +24,6 @@ class FileSystemSandbox:
         self.sandboxRoot = sandboxRoot
         self._setUpSafeOperations()
 
-    @classmethod
     def disable(self):
         if not self.enabled:
             raise RuntimeError('Sandbox already disabled')
@@ -33,7 +31,6 @@ class FileSystemSandbox:
         self.enabled = False
         self._tearDownSafeOperations()
 
-    @classmethod
     def _setUpSafeOperations(self):
         self._real_builtin_open = builtins.open
         self._real_os_mkdir = os.mkdir
@@ -55,7 +52,6 @@ class FileSystemSandbox:
         shutil.copytree = self._safe_shutil_copytree
         shutil.rmtree = self._safe_shutil_rmtree
 
-    @classmethod
     def _tearDownSafeOperations(self):
         builtins.open = self._real_builtin_open
         os.mkdir = self._real_os_mkdir
@@ -66,7 +62,6 @@ class FileSystemSandbox:
         shutil.copytree = self._real_shutil_copytree
         shutil.rmtree = self._real_shutil_rmtree
 
-    @classmethod
     def _safe_builtin_open(self, path, mode='r', *args, **kwargs):
         # We only verify if the file is being opened for writing or appending.
         # Read only access should be allowed.
@@ -74,45 +69,37 @@ class FileSystemSandbox:
             self._verifyPath(path)
         return self._real_builtin_open(path, mode, *args, **kwargs)
 
-    @classmethod
     def _safe_os_mkdir(self, path, *args, **kwargs):
         self._verifyPath(path)
         self._real_os_mkdir(path, *args, **kwargs)
 
-    @classmethod
     def _safe_os_makedirs(self, path, *args, **kwargs):
         self._verifyPath(path)
         self._real_os_makedirs(path, *args, **kwargs)
 
-    @classmethod
     def _safe_os_remove(self, path):
         self._verifyPath(path)
         self._real_os_remove(path)
 
-    @classmethod
     def _safe_shutil_copy(self, src, dst):
         # Only need to verify destination path since src will not be modified
         self._verifyPath(dst)
         self._real_shutil_copy(src, dst)
 
-    @classmethod
     def _safe_shutil_move(self, src, dst):
         self._verifyPath(src)
         self._verifyPath(dst)
         self._real_shutil_move(src, dst)
 
-    @classmethod
     def _safe_shutil_copytree(self, src, dst, *args, **kwargs):
         # Only need to verify destination path since src will not be modified
         self._verifyPath(dst)
         self._real_shutil_copytree(src, dst, *args, **kwargs)
 
-    @classmethod
     def _safe_shutil_rmtree(self, path, *args, **kwargs):
         self._verifyPath(path)
         self._real_shutil_rmtree(path, *args, **kwargs)
 
-    @classmethod
     def _verifyPath(self, path):
         "Checks that path is inside the sandbox"
         absPath = os.path.abspath(path)

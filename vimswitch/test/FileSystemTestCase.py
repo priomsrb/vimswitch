@@ -20,12 +20,13 @@ class FileSystemTestCase(BaseTestCase):
     """
 
     def setUp(self):
-        FileSystemSandbox.enable(self.getWorkingDir())
+        self.sandbox = FileSystemSandbox()
+        self.sandbox.enable(self.getWorkingDir())
         self.clearWorkingDirectory()
 
     def tearDown(self):
         self.clearWorkingDirectory()
-        FileSystemSandbox.disable()
+        self.sandbox.disable()
 
     @classmethod
     def getMyDir(self):
