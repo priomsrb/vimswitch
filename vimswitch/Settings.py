@@ -12,8 +12,8 @@ class Settings:
         self.homePath = homePath or os.path.expanduser('~')
         self.configPath = os.path.join(self.homePath, '.vimswitch')
         self.configFilePath = os.path.join(self.configPath, 'vimswitchrc')
-        self.cachePath = self.configPath
-        self.downloadsPath = os.path.join(self.cachePath, '.downloads')
+        self.cachePath = os.path.join(self.configPath, 'profiles')
+        self.downloadsPath = os.path.join(self.configPath, 'downloads')
         self.profileFiles = ['.vimrc', '_vimrc']
         self.profileDirs = ['.vim', '_vim']
         self.defaultProfile = Profile('default')

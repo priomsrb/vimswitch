@@ -37,16 +37,16 @@ class TestProfileCopier(BaseTestCase):
     def test_copyToHome_copiesFromProfileToHome(self):
         self.profileCopier.copyToHome(self.profile)
 
-        profilePath = os.path.normpath('/home/foo/.vimswitch/test.vimrc')
+        profilePath = os.path.normpath('/home/foo/.vimswitch/profiles/test.vimrc')
         homePath = os.path.normpath('/home/foo')
         self.profileDataIo.copy.assert_called_with(profilePath, homePath)
 
     def test_copyToHome_copiesFromCacheDir_fromSettings(self):
-        self.settings.cachePath = 'testCacheDir'
+        self.settings.cachePath = 'testCachePath'
 
         self.profileCopier.copyToHome(self.profile)
 
-        profilePath = os.path.normpath('testCacheDir/test.vimrc')
+        profilePath = os.path.normpath('testCachePath/test.vimrc')
         homePath = os.path.normpath('/home/foo')
         self.profileDataIo.copy.assert_called_with(profilePath, homePath)
 
@@ -55,7 +55,7 @@ class TestProfileCopier(BaseTestCase):
 
         self.profileCopier.copyToHome(self.profile)
 
-        profilePath = os.path.normpath('/home/foo/.vimswitch/test.vimrc')
+        profilePath = os.path.normpath('/home/foo/.vimswitch/profiles/test.vimrc')
         homePath = os.path.normpath('testHomeDir')
         self.profileDataIo.copy.assert_called_with(profilePath, homePath)
 
@@ -80,14 +80,14 @@ class TestProfileCopier(BaseTestCase):
     def test_copyfromHome_deletesProfileDir(self):
         self.profileCopier.copyFromHome(self.profile)
 
-        profilePath = os.path.normpath('/home/foo/.vimswitch/test.vimrc')
+        profilePath = os.path.normpath('/home/foo/.vimswitch/profiles/test.vimrc')
         self.profileDataIo.delete.assert_called_with(profilePath)
 
     def test_copyfromHome_copiesFromHomeToProfile(self):
         self.profileCopier.copyFromHome(self.profile)
 
         homePath = os.path.normpath('/home/foo')
-        profilePath = os.path.normpath('/home/foo/.vimswitch/test.vimrc')
+        profilePath = os.path.normpath('/home/foo/.vimswitch/profiles/test.vimrc')
         self.profileDataIo.copy.assert_called_with(homePath, profilePath)
 
     def test_copyfromHome_copiesFromHomeDir_fromSettings(self):
@@ -95,7 +95,7 @@ class TestProfileCopier(BaseTestCase):
         self.profileCopier.copyFromHome(self.profile)
 
         homePath = os.path.normpath('testHomeDir')
-        profilePath = os.path.normpath('/home/foo/.vimswitch/test.vimrc')
+        profilePath = os.path.normpath('/home/foo/.vimswitch/profiles/test.vimrc')
         self.profileDataIo.copy.assert_called_with(homePath, profilePath)
 
     def test_copyfromHome_copiesToCacheDir_fromSettings(self):

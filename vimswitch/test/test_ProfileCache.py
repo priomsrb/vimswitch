@@ -19,7 +19,7 @@ class TestProfileCache(FileSystemTestCase):
     # ProfileCache.contains
 
     def test_contains_whenDirExists_returnsTrue(self):
-        profileDir = self.getTestPath('.vimswitch/test.vimrc')
+        profileDir = self.getTestPath('.vimswitch/profiles/test.vimrc')
         self.diskIo.createDir(profileDir)
 
         result = self.profileCache.contains(self.testProfile)
@@ -33,8 +33,8 @@ class TestProfileCache(FileSystemTestCase):
     # ProfileCache.delete
 
     def test_delete_deletesProfile(self):
-        profileDir = self.getTestPath('.vimswitch/test.vimrc')
-        vimrcFilePath = self.getTestPath('.vimswitch/test.vimrc/.vimrc')
+        profileDir = self.getTestPath('.vimswitch/profiles/test.vimrc')
+        vimrcFilePath = self.getTestPath('.vimswitch/profiles/test.vimrc/.vimrc')
         self.diskIo.createDir(profileDir)
         self.diskIo.createFile(vimrcFilePath, 'test data')
 
@@ -45,10 +45,10 @@ class TestProfileCache(FileSystemTestCase):
     # ProfileCache.getProfileLocation
 
     def test_getProfileLocation(self):
-        self.settings.cachePath = '/foo/bar/cache'
+        self.settings.cachePath = '/foo/bar/cachePath'
         profile = Profile('test/vimrc')
         result = self.profileCache.getProfileLocation(profile)
-        self.assertEquals(result, os.path.normpath('/foo/bar/cache/test.vimrc'))
+        self.assertEquals(result, os.path.normpath('/foo/bar/cachePath/test.vimrc'))
 
     # ProfileCache.createEmptyProfile
 
@@ -57,5 +57,5 @@ class TestProfileCache(FileSystemTestCase):
 
         self.profileCache.createEmptyProfile(profile)
 
-        profileDir = self.getTestPath('.vimswitch/default')
+        profileDir = self.getTestPath('.vimswitch/profiles/default')
         self.assertTrue(self.diskIo.dirExists(profileDir))

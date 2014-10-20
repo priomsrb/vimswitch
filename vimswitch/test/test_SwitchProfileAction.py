@@ -103,7 +103,7 @@ class TestSwitchProfileAction(FileSystemTestCase):
         self.switchProfileAction.execute()
 
         self.assertFileContents('.vimrc', '" updated vimrc data')
-        self.assertFileContents('.vimswitch/test.vimrc/.vimrc', '" updated vimrc data')
+        self.assertFileContents('.vimswitch/profiles/test.vimrc/.vimrc', '" updated vimrc data')
         vimDirPath = self.getTestPath('.vim')
         self.assertTrue(self.app.diskIo.dirExists(vimDirPath))
 

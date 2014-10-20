@@ -35,8 +35,8 @@ class TestVimSwitch(FileSystemTestCase):
 
         self.assertEqual(exitCode, 0)
         # Assert default profile is created
-        self.assertFileContents('.vimswitch/default/.vimrc', '" home vimrc data')
-        self.assertDirExists('.vimswitch/default/.vim')
+        self.assertFileContents('.vimswitch/profiles/default/.vimrc', '" home vimrc data')
+        self.assertDirExists('.vimswitch/profiles/default/.vim')
         # Assert home profile is replaced by downloaded profile
         self.assertFileContents('.vimrc', '" test vimrc data')
         self.assertDirExists('.vim')
@@ -110,8 +110,8 @@ class TestVimSwitch(FileSystemTestCase):
 
         self.assertEqual(exitCode, 0)
         # Assert default profile is created and empty
-        self.assertDirExists('.vimswitch/default')
-        self.assertDirEmpty('.vimswitch/default')
+        self.assertDirExists('.vimswitch/profiles/default')
+        self.assertDirEmpty('.vimswitch/profiles/default')
         # Assert home profile is replaced by downloaded profile
         self.assertFileContents('.vimrc', '" test vimrc data')
         self.assertDirExists('.vim')
@@ -138,9 +138,9 @@ class TestVimSwitch(FileSystemTestCase):
 
         self.assertEqual(exitCode, 0, stdout.getvalue())
         # Assert default profile is created
-        self.assertFileContents('.vimswitch/default/.vimrc', '" home vimrc data')
-        self.assertFileContents('.vimswitch/default/.vim/plugin/dummy_plugin.vim', '" dummy home vim plugin')
-        self.assertDirExists('.vimswitch/default/.vim')
+        self.assertFileContents('.vimswitch/profiles/default/.vimrc', '" home vimrc data')
+        self.assertFileContents('.vimswitch/profiles/default/.vim/plugin/dummy_plugin.vim', '" dummy home vim plugin')
+        self.assertDirExists('.vimswitch/profiles/default/.vim')
         # Assert home profile is replaced by downloaded profile
         self.assertFileContents('.vimrc', '" test vimrc data')
         self.assertDirExists('.vim')
@@ -167,9 +167,9 @@ class TestVimSwitch(FileSystemTestCase):
 
         self.assertEqual(exitCode, 0, stdout.getvalue())
         # Assert .vimrc changes saved
-        self.assertFileContents('.vimswitch/test.vimrc/.vimrc', '" updated vimrc data')
+        self.assertFileContents('.vimswitch/profiles/test.vimrc/.vimrc', '" updated vimrc data')
         # Assert .vim dir deleted
-        self.assertPathDoesNotExist('.vimswitch/test.vimrc/.vim')
+        self.assertPathDoesNotExist('.vimswitch/profiles/test.vimrc/.vim')
         # Assert stdout
         self.assertStdout(stdout, """
             Saving profile: test/vimrc
@@ -220,8 +220,8 @@ class TestVimSwitch(FileSystemTestCase):
         self.assertPathDoesNotExist('_vimrc')
         self.assertPathDoesNotExist('_vim')
         # Assert windows profile moved to cache
-        self.assertFileContents('.vimswitch/default/_vimrc', '" home vimrc data')
-        self.assertDirExists('.vimswitch/default/_vim')
+        self.assertFileContents('.vimswitch/profiles/default/_vimrc', '" home vimrc data')
+        self.assertDirExists('.vimswitch/profiles/default/_vim')
         # Assert home profile is replaced by downloaded profile
         self.assertFileContents('.vimrc', '" test vimrc data')
         self.assertDirExists('.vim')
@@ -240,8 +240,8 @@ class TestVimSwitch(FileSystemTestCase):
 
         self.assertEqual(exitCode, 0)
         self.assertFileContents('.vimrc', '" updated vimrc data')
-        self.assertFileContents('.vimswitch/test.vimrc/.vimrc', '" updated vimrc data')
-        self.assertDirExists('.vimswitch/test.vimrc/.vim')
+        self.assertFileContents('.vimswitch/profiles/test.vimrc/.vimrc', '" updated vimrc data')
+        self.assertDirExists('.vimswitch/profiles/test.vimrc/.vim')
         self.assertStdout(stdout, """
             Saving profile: test/vimrc
             Downloading profile from https://github.com/test/vimrc/archive/master.zip
@@ -261,8 +261,8 @@ class TestVimSwitch(FileSystemTestCase):
 
         self.assertEqual(exitCode, 0)
         self.assertFileContents('.vimrc', '" updated vimrc data')
-        self.assertFileContents('.vimswitch/test.vimrc/.vimrc', '" updated vimrc data')
-        self.assertDirExists('.vimswitch/test.vimrc/.vim')
+        self.assertFileContents('.vimswitch/profiles/test.vimrc/.vimrc', '" updated vimrc data')
+        self.assertDirExists('.vimswitch/profiles/test.vimrc/.vim')
         self.assertStdout(stdout, """
             Saving profile: test2/vimrc
             Downloading profile from https://github.com/test/vimrc/archive/master.zip
@@ -281,8 +281,8 @@ class TestVimSwitch(FileSystemTestCase):
 
         self.assertEqual(exitCode, 0)
         self.assertFileContents('.vimrc', '" updated vimrc data')
-        self.assertFileContents('.vimswitch/test.vimrc/.vimrc', '" updated vimrc data')
-        self.assertDirExists('.vimswitch/test.vimrc/.vim')
+        self.assertFileContents('.vimswitch/profiles/test.vimrc/.vimrc', '" updated vimrc data')
+        self.assertDirExists('.vimswitch/profiles/test.vimrc/.vim')
         self.assertStdout(stdout, """
             Saving profile: test/vimrc
             Downloading profile from https://github.com/test/vimrc/archive/master.zip
@@ -295,8 +295,8 @@ class TestVimSwitch(FileSystemTestCase):
 
         self.assertEqual(exitCode, 0)
         self.assertFileContents('.vimrc', '" test vimrc data')
-        self.assertFileContents('.vimswitch/test.vimrc/.vimrc', '" test vimrc data')
-        self.assertDirExists('.vimswitch/test.vimrc/.vim')
+        self.assertFileContents('.vimswitch/profiles/test.vimrc/.vimrc', '" test vimrc data')
+        self.assertDirExists('.vimswitch/profiles/test.vimrc/.vim')
         self.assertStdout(stdout, """
             Saving profile: default
             Downloading profile from https://github.com/test/vimrc/archive/master.zip
@@ -312,8 +312,8 @@ class TestVimSwitch(FileSystemTestCase):
 
         self.assertEqual(exitCode, -1)
         self.assertFileContents('.vimrc', '" test vimrc data')
-        self.assertFileContents('.vimswitch/test.vimrc/.vimrc', '" test vimrc data')
-        self.assertDirExists('.vimswitch/test.vimrc/.vim')
+        self.assertFileContents('.vimswitch/profiles/test.vimrc/.vimrc', '" test vimrc data')
+        self.assertDirExists('.vimswitch/profiles/test.vimrc/.vim')
         self.assertStdout(stdout, """
             Cannot update default profile
         """)

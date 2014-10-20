@@ -19,14 +19,15 @@ class TestProfileRetriever(FileSystemTestCase):
         self.profileRetriever = getProfileRetriever(app)
         self.diskIo = app.diskIo
         self.diskIo.createDirWithParents(app.settings.downloadsPath)
+        self.diskIo.createDirWithParents(app.settings.cachePath)
 
     def test_retrieve_retrievesProfile(self):
         profile = Profile('test/vimrc')
 
         self.profileRetriever.retrieve(profile)
 
-        vimDirPath = self.getTestPath('.vimswitch/test.vimrc/.vim')
-        vimrcFilePath = self.getTestPath('.vimswitch/test.vimrc/.vimrc')
+        vimDirPath = self.getTestPath('.vimswitch/profiles/test.vimrc/.vim')
+        vimrcFilePath = self.getTestPath('.vimswitch/profiles/test.vimrc/.vimrc')
         actualVimrcContent = self.diskIo.getFileContents(vimrcFilePath)
         expectedVimrcContent = '" test vimrc data'
         self.assertEqual(actualVimrcContent, expectedVimrcContent)
@@ -34,9 +35,9 @@ class TestProfileRetriever(FileSystemTestCase):
 
     def test_retrieve_profileAlreadyCached_overwritesProfile(self):
         profile = Profile('test/vimrc')
-        profileDirPath = self.getTestPath('.vimswitch/test.vimrc')
-        vimDirPath = self.getTestPath('.vimswitch/test.vimrc/.vim')
-        vimrcFilePath = self.getTestPath('.vimswitch/test.vimrc/.vimrc')
+        profileDirPath = self.getTestPath('.vimswitch/profiles/test.vimrc')
+        vimDirPath = self.getTestPath('.vimswitch/profiles/test.vimrc/.vim')
+        vimrcFilePath = self.getTestPath('.vimswitch/profiles/test.vimrc/.vimrc')
         self.diskIo.createDir(profileDirPath)
         self.diskIo.createDir(vimDirPath)
         self.diskIo.createFile(vimrcFilePath, '" previous data')
