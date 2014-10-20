@@ -1,5 +1,4 @@
 import os.path
-import inspect
 
 
 class CommonDiskIoTests:
@@ -381,6 +380,52 @@ class CommonDiskIoTests:
         self.diskIo.createFile(filePath, 'test data')
 
         self.assertRaises(Exception, self.diskIo.isDirEmpty, filePath)
+
+    # DiskIo.getDirContents
+
+    def test_getDirContents_emptyDir_returnsEmptyList(self):
+        dirPath = self.getTestPath('dir1')
+        self.diskIo.createDir(dirPath)
+
+        dirContents = self.diskIo.getDirContents(dirPath)
+
+        self.assertEqual(dirContents, [])
+
+    def test_getDirContents_dirWithOneFile_returnsSingleElementList(self):
+        dirPath = self.getTestPath('dir1')
+        self.diskIo.createDir(dirPath)
+        innerFilePath = self.getTestPath('dir1/innerFile.txt')
+        self.diskIo.createFile(innerFilePath, 'test data')
+
+        dirContents = self.diskIo.getDirContents(dirPath)
+
+        self.assertEqual(dirContents, ['innerFile.txt'])
+
+    def test_getDirContents_dirWithOneDir_returnsSingleElementList(self):
+        dirPath = self.getTestPath('dir1')
+        self.diskIo.createDir(dirPath)
+        innerDirPath = self.getTestPath('dir1/innerDir')
+        self.diskIo.createDir(innerDirPath)
+
+        dirContents = self.diskIo.getDirContents(dirPath)
+
+        self.assertEqual(dirContents, ['innerDir'])
+
+    def test_getDirContents_dirWithManyFiles_returnsList(self):
+        dirPath = self.getTestPath('dir1')
+        self.diskIo.createDir(dirPath)
+        innerFilePath = self.getTestPath('dir1/innerFile.txt')
+        self.diskIo.createFile(innerFilePath, 'test data')
+        innerDirPath = self.getTestPath('dir1/innerDir')
+        self.diskIo.createDir(innerDirPath)
+        innerFile2Path = self.getTestPath('dir1/innerDir/innerFile2.txt')
+        self.diskIo.createFile(innerFile2Path, 'test data')
+
+        dirContents = self.diskIo.getDirContents(dirPath)
+
+        self.assertIn('innerFile.txt', dirContents)
+        self.assertIn('innerDir', dirContents)
+        self.assertEqual(len(dirContents), 2)
 
     # DiskIo.anyExists
 

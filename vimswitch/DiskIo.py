@@ -53,6 +53,9 @@ class DiskIo:
     def isDirEmpty(self, dirPath):
         return len(os.listdir(dirPath)) == 0
 
+    def getDirContents(self, dirPath):
+        return os.listdir(dirPath)
+
     def anyExists(self, path):
         return self.fileExists(path) or self.dirExists(path)
 
