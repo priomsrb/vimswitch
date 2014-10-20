@@ -1,18 +1,19 @@
-import os
-from zipfile import ZipFile
+from .DiskIo import getDiskIo
+from .FileDownloader import getFileDownloader
+from .GithubZipballExtractor import getGithubZipballExtractor
+from .ProfileCache import getProfileCache
 from .ProfileUrlResolver import getProfileUrl
 from .Settings import getSettings
-from .FileDownloader import getFileDownloader
-from .ProfileCache import getProfileCache
-from .DiskIo import getDiskIo
+import os
 
 
 class ProfileRetriever:
-    def __init__(self, settings, fileDownloader, profileCache, diskIo):
+    def __init__(self, settings, fileDownloader, profileCache, diskIo, githubZipballExtractor):
         self.settings = settings
         self.fileDownloader = fileDownloader
         self.profileCache = profileCache
         self.diskIo = diskIo
+        self.githubZipballExtractor = githubZipballExtractor
 
     def retrieve(self, profile):
         """
@@ -24,7 +25,7 @@ class ProfileRetriever:
         downloadsPath = self.settings.downloadsPath
         downloadedFilePath = self.fileDownloader.download(url, downloadsPath)
         extractionDir = os.path.splitext(downloadedFilePath)[0]
-        ZipFile(downloadedFilePath).extractall(extractionDir)
+        self.githubZipballExtractor.extractZipball(downloadedFilePath, extractionDir)
 
         if self.profileCache.contains(profile):
             self.profileCache.delete(profile)
@@ -42,5 +43,6 @@ def createProfileRetriever(app):
     fileDownloader = getFileDownloader(app)
     profileCache = getProfileCache(app)
     diskIo = getDiskIo(app)
-    profileRetriever = ProfileRetriever(settings, fileDownloader, profileCache, diskIo)
+    githubZipballExtractor = getGithubZipballExtractor(app)
+    profileRetriever = ProfileRetriever(settings, fileDownloader, profileCache, diskIo, githubZipballExtractor)
     return profileRetriever

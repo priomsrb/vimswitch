@@ -1,10 +1,9 @@
-from .FakeFileDownloader import FakeFileDownloader
+from .FakeFileDownloader import createFakeFileDownloader
 from .FileSystemTestCase import FileSystemTestCase
 from mock import patch
-from vimswitch.DiskIo import DiskIo
+from vimswitch.Application import Application
 from vimswitch.Profile import Profile
-from vimswitch.ProfileCache import ProfileCache
-from vimswitch.ProfileRetriever import ProfileRetriever
+from vimswitch.ProfileRetriever import getProfileRetriever
 from vimswitch.Settings import Settings
 from vimswitch.six import StringIO
 
@@ -12,16 +11,14 @@ from vimswitch.six import StringIO
 class TestProfileRetriever(FileSystemTestCase):
     def setUp(self):
         FileSystemTestCase.setUp(self)
-        self.diskIo = DiskIo()
+        app = Application()
 
-        self.settings = Settings(self.getWorkingDir())
-        self.diskIo.createDirWithParents(self.settings.downloadsPath)
+        app.settings = Settings(self.getWorkingDir())
+        app.fileDownloader = createFakeFileDownloader(app, self.getDataPath('fake_internet'))
 
-        fileDownloader = FakeFileDownloader(self.getDataPath('fake_internet'), self.diskIo)
-
-        profileCache = ProfileCache(self.settings, self.diskIo)
-
-        self.profileRetriever = ProfileRetriever(self.settings, fileDownloader, profileCache, self.diskIo)
+        self.profileRetriever = getProfileRetriever(app)
+        self.diskIo = app.diskIo
+        self.diskIo.createDirWithParents(app.settings.downloadsPath)
 
     def test_retrieve_retrievesProfile(self):
         profile = Profile('test/vimrc')
