@@ -92,6 +92,7 @@ class TestSwitchProfileAction(FileSystemTestCase):
         self.assertFalse(self.app.diskIo.dirExists(cachedVimDirPath))
 
     def test_switchToProfile_updateFlagSet_updatesCachedProfile(self):
+        # Do an initial download of the profile
         self.switchProfileAction.profile = self.profile
         self.switchProfileAction.execute()
         # Update the profile on the internet by using the version at fake_internet2
