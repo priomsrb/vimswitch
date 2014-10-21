@@ -369,6 +369,8 @@ class TestVimSwitch(FileSystemTestCase):
             helpRegex = """
                 usage: vimswitch [-h] [-u] [-v] [profile]
 
+                A utility for switching between vim profiles.
+
                 positional arguments:
                   profile
 
