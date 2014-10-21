@@ -1,6 +1,8 @@
-*.pyc
-.ropeproject
 *.ipynb
-cover/
+*.pyc
 .coverage
+.ropeproject
 .tox
+build/
+cover/
+dist/
