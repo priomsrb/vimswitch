@@ -22,32 +22,32 @@
         <h2>Overview</h2>
         <p>So you've customized vim just the way you want it. But as soon as you jump on a remote machine or a friend's PC, you lose all your settings. Well fear no longer! VimSwitch is here to save the day.</p>
         <p>VimSwitch makes it easy to switch to your vim profile on any machine. As long as you have your vim settings up on GitHub (For example: <a href="https://github.com/priomsrb/vimrc/">priomsrb/vimrc</a>), switching to it is as easy as:</p>
-        <div class="terminal"># ./vimswitch priomsrb/vimrc</div>
+        <div class="terminal"><span class="prompt"># </span>./vimswitch priomsrb/vimrc</div>
         <p>When you're done, you can restore your previous vim settings with:</p>
-        <div class="terminal"># ./vimswitch default</div>
+        <div class="terminal"><span class="prompt"># </span>./vimswitch default</div>
 
         <h2>Installation</h2>
         <p>VimSwitch requires Python 2.7 or 3.2+ to be installed. Fortunately, Python comes pre-installed in most Linux distributions.</p>
         <p>You can get the latest copy of vimswitch from <a href="https://github.com/priomsrb/vimswitch/raw/master/release/vimswitch">GitHub</a>:</p>
-        <div class="terminal"># wget <a href="https://github.com/priomsrb/vimswitch/raw/master/release/vimswitch">https://github.com/priomsrb/vimswitch/raw/master/release/vimswitch</a> && chmod +x vimswitch</div>
+        <div class="terminal"><span class="prompt"># </span>wget <a href="https://github.com/priomsrb/vimswitch/raw/master/release/vimswitch">https://github.com/priomsrb/vimswitch/raw/master/release/vimswitch</a> && chmod +x vimswitch</div>
         <p>To run vimswitch simply use:</p>
-        <div class="terminal"># ./vimswitch</div>
+        <div class="terminal"><span class="prompt"># </span>./vimswitch</div>
         <p>or</p>
-        <div class="terminal"># python vimswitch</div>
+        <div class="terminal"><span class="prompt"># </span>python vimswitch</div>
 
         <h2>Usage</h2>
         <div class="terminal">
-# ./vimswitch                      <span class="comment"># Show current profile</span>
+vimswitch                      <span class="comment"># Show current profile</span>
 
-# ./vimswitch &lt;profile&gt;            <span class="comment"># Switch to profile. Profile must be of the form: user/repo</span>
+vimswitch &lt;profile&gt;            <span class="comment"># Switch to profile. Profile must be of the form: user/repo</span>
 
-# ./vimswitch default              <span class="comment"># Restore the user's original vim settings</span>
+vimswitch default              <span class="comment"># Restore the user's original vim settings</span>
 
-# ./vimswitch --update &lt;profile&gt;   <span class="comment"># Re-download and switch to profile</span>
+vimswitch --update &lt;profile&gt;   <span class="comment"># Re-download and switch to profile</span>
 
-# ./vimswitch --update             <span class="comment"># Re-download current profile</span>
+vimswitch --update             <span class="comment"># Re-download current profile</span>
 
-# ./vimswitch --help               <span class="comment"># Show help message</span>
+vimswitch --help               <span class="comment"># Show help message</span>
 
 </div>
 
