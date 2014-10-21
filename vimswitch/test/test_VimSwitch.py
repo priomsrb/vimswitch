@@ -374,8 +374,8 @@ class TestVimSwitch(FileSystemTestCase):
 
                 optional arguments:
                   -h, --help     show this help message and exit
-                  -u, --update
-                  -v, --version
+                  -u, --update   download profile again
+                  -v, --version  show version
             """
             helpRegex = helpRegex.replace('[', r'\[')
             helpRegex = helpRegex.replace(']', r'\]')
