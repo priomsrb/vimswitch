@@ -1,17 +1,14 @@
-# VimSwitch (under construction)
+# VimSwitch
 
-**WARNING**: This is alpha software and will make changes to your home directory.
-
-## Overview
-VimSwitch lets you use your vim settings on any machine.
-
-## How to use
-- First upload your vim settings onto github (For example: [https://github.com/priomsrb/vimrc](https://github.com/priomsrb/vimrc)).
-- Then run `vimswitch priomsrb/vimrc` to download and switch to your vim profile.
-- To switch back to your default profile, run `vimswitch default`.
+##Overview
+For an overview and installation steps visit [https://priomsrb.github.io/vimswitch/](https://priomsrb.github.io/vimswitch/).
 
 ## Requirements
-VimSwitch just requires Python. Both Python 2.7 and Python 3.2+ are supported.
+Running VimSwitch only requires Python 2.7 or 3.2+. However, if you want to build and test VimSwitch you need to install its dependencies using `pip install -r requirements.txt`
 
-## Roadmap
-- Improve error messages
+## Testing
+VimSwitch needs to support multiple Python versions over multiple operating systems. Therefore, it's important to maintain a high test coverage.
+
+To run the test suite against the current Python version use `run_tests.sh` or `run_tests.bat`.
+
+To run tests against all supported versions of Python use `tox`.
