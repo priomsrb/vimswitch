@@ -60,10 +60,11 @@ class DiskIo:
         return self.fileExists(path) or self.dirExists(path)
 
     def setReadOnly(self, path, readOnly):
+        st = os.stat(path)
         if readOnly:
-            os.chmod(path, stat.S_IREAD)
+            os.chmod(path, st.st_mode & ~stat.S_IWRITE)
         else:
-            os.chmod(path, stat.S_IWRITE)
+            os.chmod(path, st.st_mode | stat.S_IWRITE)
 
     def isReadOnly(self, path):
         mode = os.stat(path)[stat.ST_MODE]
