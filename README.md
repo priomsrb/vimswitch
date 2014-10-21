@@ -1,6 +1,5 @@
 # VimSwitch
 
-##Overview
 For an overview and installation steps visit [https://priomsrb.github.io/vimswitch/](https://priomsrb.github.io/vimswitch/).
 
 ## Requirements
