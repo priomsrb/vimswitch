@@ -1,0 +1,69 @@
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-55943454-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+    
+</head>
+<body>
+<a href="https://github.com/priomsrb/vimswitch"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+
+    <div id="container">
+        <h1>VimSwitch</h1>
+        <div class="tagline">Use your vim settings everywhere.</div>
+
+        <h2>Overview</h2>
+        <p>So you've customized vim just the way you want it. But as soon as you jump on a remote machine or a friend's PC, you lose all your settings. Well fear no longer! VimSwitch is here to save the day.</p>
+        <p>VimSwitch makes it easy to switch to your vim profile on any machine. As long as you have your vim settings up on GitHub (For example: <a href="https://github.com/priomsrb/vimrc/">priomsrb/vimrc</a>), switching to it is as easy as:</p>
+        <div class="terminal"># ./vimswitch priomsrb/vimrc</div>
+        <p>When you're done, you can restore your previous vim settings with:</p>
+        <div class="terminal"># ./vimswitch default</div>
+
+        <h2>Installation</h2>
+        <p>VimSwitch requires Python 2.7 or 3.2+ to be installed. Fortunately, Python comes pre-installed in most Linux distributions.</p>
+        <p>You can get the latest copy of vimswitch from <a href="https://github.com/priomsrb/vimswitch/raw/master/release/vimswitch">GitHub</a>:</p>
+        <div class="terminal"># wget <a href="https://github.com/priomsrb/vimswitch/raw/master/release/vimswitch">https://github.com/priomsrb/vimswitch/raw/master/release/vimswitch</a> && chmod +x vimswitch</div>
+        <p>To run vimswitch simply use:</p>
+        <div class="terminal"># ./vimswitch</div>
+        <p>or</p>
+        <div class="terminal"># python vimswitch</div>
+
+        <h2>Usage</h2>
+        <div class="terminal">
+# ./vimswitch                      <span class="comment"># Show current profile</span>
+
+# ./vimswitch &lt;profile&gt;            <span class="comment"># Switch to profile. Profile must be of the form: user/repo</span>
+
+# ./vimswitch default              <span class="comment"># Restore the user's original vim settings</span>
+
+# ./vimswitch --update &lt;profile&gt;   <span class="comment"># Re-download and switch to profile</span>
+
+# ./vimswitch --update             <span class="comment"># Re-download current profile</span>
+
+# ./vimswitch --help               <span class="comment"># Show help message</span>
+
+</div>
+
+        <h2>Supported Platforms</h2>
+        <p>VimSwitch has been tested on Windows and Linux with Python 2.7, 3.2, 3.3 and 3.4.</p>
+
+        <h2>Bugs/Feature Requests</h2>
+        <p>If you find a bug or want to request a feature, please visit the <a href="https://github.com/priomsrb/vimswitch/issues">issues</a> page.</p>
+
+        <h2>Roadmap</h2>
+        <ul>
+            <li>Add <span class="inline-terminal">--launch &lt;profile&gt;</span> command for launching vim with a profile without switching away from the current profile</li>
+        </ul>
+
+        <br />
+
+    </div>
+</body>
+</html>
