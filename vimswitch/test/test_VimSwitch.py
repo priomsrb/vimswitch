@@ -33,7 +33,7 @@ class TestVimSwitch(FileSystemTestCase):
 
         exitCode = self.runMain('./vimswitch test/vimrc')
 
-        self.assertEqual(exitCode, 0)
+        self.assertEqual(exitCode, 0, stdout.getvalue())
         # Assert default profile is created
         self.assertFileContents('.vimswitch/profiles/default/.vimrc', '" home vimrc data')
         self.assertDirExists('.vimswitch/profiles/default/.vim')
@@ -238,7 +238,7 @@ class TestVimSwitch(FileSystemTestCase):
         # Now we update test/vimrc
         exitCode = self.runMain('./vimswitch --update test/vimrc')
 
-        self.assertEqual(exitCode, 0)
+        self.assertEqual(exitCode, 0, stdout.getvalue())
         self.assertFileContents('.vimrc', '" updated vimrc data')
         self.assertFileContents('.vimswitch/profiles/test.vimrc/.vimrc', '" updated vimrc data')
         self.assertDirExists('.vimswitch/profiles/test.vimrc/.vim')
@@ -259,7 +259,7 @@ class TestVimSwitch(FileSystemTestCase):
         # Now we update test/vimrc
         exitCode = self.runMain('./vimswitch --update test/vimrc')
 
-        self.assertEqual(exitCode, 0)
+        self.assertEqual(exitCode, 0, stdout.getvalue())
         self.assertFileContents('.vimrc', '" updated vimrc data')
         self.assertFileContents('.vimswitch/profiles/test.vimrc/.vimrc', '" updated vimrc data')
         self.assertDirExists('.vimswitch/profiles/test.vimrc/.vim')
@@ -279,7 +279,7 @@ class TestVimSwitch(FileSystemTestCase):
         # Now we update test/vimrc
         exitCode = self.runMain('./vimswitch --update')
 
-        self.assertEqual(exitCode, 0)
+        self.assertEqual(exitCode, 0, stdout.getvalue())
         self.assertFileContents('.vimrc', '" updated vimrc data')
         self.assertFileContents('.vimswitch/profiles/test.vimrc/.vimrc', '" updated vimrc data')
         self.assertDirExists('.vimswitch/profiles/test.vimrc/.vim')
@@ -293,7 +293,7 @@ class TestVimSwitch(FileSystemTestCase):
     def test_updateProfile_downloadsUncachedProfile(self, stdout):
         exitCode = self.runMain('./vimswitch --update test/vimrc')
 
-        self.assertEqual(exitCode, 0)
+        self.assertEqual(exitCode, 0, stdout.getvalue())
         self.assertFileContents('.vimrc', '" test vimrc data')
         self.assertFileContents('.vimswitch/profiles/test.vimrc/.vimrc', '" test vimrc data')
         self.assertDirExists('.vimswitch/profiles/test.vimrc/.vim')
