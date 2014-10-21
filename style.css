@@ -1,5 +1,5 @@
 body {
-    background-color: #FFAA22;
+    background-color: #FFCC66;
     font-family: sans-serif;
 }
 
@@ -17,7 +17,7 @@ h1 {
 }
 
 .tagline {
-    background-color: #DD8811;
+    background-color: #FFAA33;
     font-style: italic;
     font-size: 2em;
     text-align: center;
@@ -44,7 +44,7 @@ h1 {
 
 .inline-terminal {
     font-family: monospace;
-    background-color: #CC7711;
+    background-color: #EE9933;
     /*color: #FFF;*/
     color: #000;
     padding: 1px 5px;
