@@ -19,7 +19,9 @@ class CommandLineParser:
         self._processArguments(parser, arguments, argv)
 
     def _createParser(self):
-        parser = CustomArgumentParser(prog='vimswitch')
+        parser = CustomArgumentParser(
+            prog='vimswitch',
+            description='A utility for switching between vim profiles.')
         parser.add_argument('profile', nargs='?')
         parser.add_argument('-u', '--update', action='store_true',
                             help='download profile again')
