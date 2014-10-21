@@ -1,6 +1,4 @@
 @echo off
-:loop
-cls
 
 :: TEST_TYPE - Possible values:
 :: BASIC = Runs all tests except the slow and external ones
@@ -14,6 +12,8 @@ cls
 
 set TEST_TYPE=BASIC
 
+:loop
+cls
 echo %TEST_TYPE% TESTS
 python --version
 
