@@ -1,0 +1,1 @@
+- When doing end to end tests, make sure to clear the application state between calls to app.main(). Clearing stdout is also needed if stdout is being asserted on.

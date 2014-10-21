@@ -1,0 +1,81 @@
+#On back:
+
+#Todo:
+- The --help option should not have a exit code of -1
+- Create an .exe version. Check py2exe mailing list
+- Add chmod and other file status operations to DiskSandbox
+- Write test for switching to the current profile
+- Write test for switching to default profile on first run
+- Write test for __main__.py. Check that it returns an exit code
+- Create a Logger class. Use for logging exceptions
+- Try using mock.patch for making operations safe in FileSystemTestCase
+- Use os.path.commonprefix([requested_path, startdir]) instead of string.startswith
+- Find out how to prevent path traversal by using os.path.relpath
+- Use u'' or b'' instead of plain '' for strings
+- Make VimSwitch.main() print stack traces when given the --verbose option.
+- FileSystemSandbox uses startsWith. What happens if we try to write to workingDir2? or try to delete workingDir itself?
+
+#Cancelled:
+- Maybe move getProfileUrl to be a method of Profile. [Maybe later when profiles can have custom URLs]
+- Migrate FileSystemTestCase's to use FakeDiskIo. [Does not model DiskIo.deleteDir(path,force=False) properly. So will not be used anymore]
+- Find places where we do 'import .Module'. Replace with 'from .Module import foo'
+- Do a grep for 'pass'. May be some incomplete methods
+- Create a ConfigFiles class with createConfigFiles [Created ApplicationDirs instead]
+? Move the DiskIo tests into an integration test suite [It's fast enough as it is]
+- Get some naming consistency:
+    % Use 'path' instead of filename or dir
+    - Some tests contain 'when' some don't. Make it consistent
+- Rename tests from 'test_*.py' to 'Test*.py'. Make it consistent with the class name
+
+
+#Porting:
+- Never use bare ''. Always prefix with u'' or b''
+- investigate tox - testing different versions of python
+
+
+Version 0.#1:
+% Show current profile when run with no arguments
+% Overwrite to cached profile when switching away
+% Print a message when copying profile to cache. 'Saving profile: default'
+% Allow updating cached profile. 'vimswitch --update test/vimrc'
+% Make a script for packaging VimSwitch into a single executable file
+
+Version 0.#2:
+- Allow launching vim with a profile without changing current profile (vimswitch --launch test/vimrc)
+
+#Done:
+- rename Settings.getDefaultProfileName() to getDefaultProfile?
+- Use os.path.join instead of appending '/'
+- Rename the settings functions to plain variables instead of getters
+- Write tests for TestFileDownloader
+- Make test for exception when FileDownloader is given a 404 URL
+- Make TestFileDownloader throw error on 404's [http://stackoverflow.com/questions/1308542/how-to-catch-404-error-in-urllib-urlretrieve]
+- Move TestFileDownloader into a new test suite: 'slow'
+- Commit the FileDownloader changes
+- Make os.makedirs safe in FileSystemTestCase
+- Make TestProfileCache into a FileSystemTestCase
+- Add actions for shortHelp
+- Create default settings files
+- Find a way for vimswitch/test/workingDir to be added to git. Otherwise generate it during tests. [Added a README file inside it]
+- Write VimSwitch tests for no args and invalid args.
+- Use PyFakeFS to make FakeFsDiskIo
+- Write a test for DiskIo.removeDir(force=True) removing read only files too. Then implement.
+- Use force on rmtree to remove read only files too. Useful because some .git files can be read only
+- Write tests for when ~/.vim is read only. Should work as expected
+- Write a test for VimSwitch: test_switchProfile_createsApplicationDirs
+- Create an end-to-end test for VimSwitch
+- Maybe use the six module in tests for easier porting to python3
+- rename ProfileCache.getLocation to getProfileLocation
+- Rename ShortHelpAction to showCurrentProfileAction
+- Write tests for ShortHelpAction
+- Inline the settings stubs
+- Add a common testcase class. Add assertNotRegex to it
+- Find a way to use fake_internet2 in TestVimSwitch.test_updateProfile_redownloadsCachedProfile
+- Add more assertPathDoesNotExist in TestVimSwitch
+- Make Actions inherit from Action. Refactor ResolveActions to use a common action object.
+- Move the sandbox stuff in FileSystemTestCase into new DiskSandbox class
+- make Action.execute() an abstract method. (raise NotImplementedError). See if we have any other abstract methods.
+- Upload my vim profile to github
+- Test vimswitch on Ma's (Linux) and Baba's (Windows) pc's.
+- Add a --version option
+- Add descriptions to --update and --version options

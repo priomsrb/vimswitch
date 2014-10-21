@@ -1,0 +1,1 @@
+These are mostly personal notes related to the project. They are not very organized and will often be out of date.
