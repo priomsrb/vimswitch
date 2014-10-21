@@ -1,8 +1,9 @@
+from .CommandLineParser import getCommandLineParser
 from .InvalidArgsAction import createInvalidArgsAction
 from .ShowCurrentProfileAction import createShowCurrentProfileAction
+from .ShowVersionAction import createShowVersionAction
 from .SwitchProfileAction import createSwitchProfileAction
 from .UpdateProfileAction import createUpdateProfileAction
-from .CommandLineParser import getCommandLineParser
 
 
 class ActionResolver:
@@ -22,6 +23,8 @@ class ActionResolver:
             action.profile = self.commandLineParser.profile
         elif actionString == 'showCurrentProfile':
             action = createShowCurrentProfileAction(self.app)
+        elif actionString == 'showVersion':
+            action = createShowVersionAction(self.app)
         else:
             action = createInvalidArgsAction(self.app)
             action.errorMessage = self.commandLineParser.errorMessage

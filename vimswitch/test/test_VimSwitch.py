@@ -5,6 +5,8 @@ from mock import patch
 from vimswitch.Application import Application
 from vimswitch.VimSwitch import VimSwitch
 from vimswitch.six import StringIO
+import platform
+import vimswitch.version
 
 
 class TestVimSwitch(FileSystemTestCase):
@@ -365,14 +367,15 @@ class TestVimSwitch(FileSystemTestCase):
             self.assertEqual(exitCode, -1, stdout.getvalue())
             # Assert stdout
             helpRegex = """
-                usage: vimswitch [-h] [-u] [profile]
+                usage: vimswitch [-h] [-u] [-v] [profile]
 
                 positional arguments:
                   profile
 
                 optional arguments:
-                  -h, --help    show this help message and exit
+                  -h, --help     show this help message and exit
                   -u, --update
+                  -v, --version
             """
             helpRegex = helpRegex.replace('[', r'\[')
             helpRegex = helpRegex.replace(']', r'\]')
@@ -390,6 +393,28 @@ class TestVimSwitch(FileSystemTestCase):
             usage: vimswitch .*
             .*
         """)
+
+    @patch('sys.stdout', new_callable=StringIO)
+    def test_version(self, stdout):
+        argsList = [
+            './vimswitch -v',
+            './vimswitch --version'
+        ]
+
+        for args in argsList:
+            exitCode = self.runMain(args)
+
+            self.assertEqual(exitCode, 0, stdout.getvalue())
+            # Assert stdout
+            appVersion = vimswitch.version.__version__
+            pythonVersion = platform.python_version()
+            versionRegex = 'vimswitch %s (python %s)' % (appVersion, pythonVersion)
+            versionRegex = versionRegex.replace('(', r'\(')
+            versionRegex = versionRegex.replace(')', r'\)')
+            self.assertStdout(stdout, versionRegex)
+            self.resetStdout(stdout)
+            # appVersion must have at least 3 chars
+            self.assertTrue(len(appVersion) >= len('0.0'))
 
     # Helpers
 

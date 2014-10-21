@@ -47,6 +47,15 @@ class TestActionResolver(BaseTestCase):
         showCurrentProfileAction = mock.return_value
         self.assertTrue(showCurrentProfileAction.execute.called)
 
+    @patch('vimswitch.ShowVersionAction.ShowVersionAction')
+    def test_doActions_resolvesShowVersionAction(self, mock):
+        self.commandLineParser.action = 'showVersion'
+
+        self.actionResolver.doActions()
+
+        showVersionAction = mock.return_value
+        self.assertTrue(showVersionAction.execute.called)
+
     @patch('vimswitch.InvalidArgsAction.InvalidArgsAction')
     def test_doActions_resolvesInvalidArgsAction(self, mock):
         self.commandLineParser.action = 'invalidArgs'

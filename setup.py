@@ -5,7 +5,7 @@ from distutils.core import setup
 
 setup(
     name='vimswitch',
-    version='0.1',
+    version='0.1-beta',
     description='A utility for switching vim profiles',
     author='Shafqat Bhuiyan',
     author_email='priomsrb@gmail.com',

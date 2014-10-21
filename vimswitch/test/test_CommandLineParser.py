@@ -37,6 +37,11 @@ class TestCommandLineParser(BaseTestCase):
         self.assertEqual(self.commandLineParser.action, 'updateProfile')
         self.assertEqual(self.commandLineParser.profile, None)
 
+    def test_parse_showVersionAction(self):
+        argv = './vimswitch --version'.split()
+        self.commandLineParser.parse(argv)
+        self.assertEqual(self.commandLineParser.action, 'showVersion')
+
     def test_parse_tooManyArgs_setsErrorMessage(self):
         argv = './vimswitch test/vimrc foo'.split()
 

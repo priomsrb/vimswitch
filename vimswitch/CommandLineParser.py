@@ -22,12 +22,15 @@ class CommandLineParser:
         parser = CustomArgumentParser(prog='vimswitch')
         parser.add_argument('profile', nargs='?')
         parser.add_argument('-u', '--update', action='store_true')
+        parser.add_argument('-v', '--version', action='store_true')
         return parser
 
     def _processArguments(self, parser, arguments, argv):
         if parser.hasError:
             self.errorMessage = parser.errorMessage
             self.action = 'invalidArgs'
+        elif arguments.version:
+            self.action = 'showVersion'
         elif arguments.update:
             self.action = 'updateProfile'
             profileName = arguments.profile
