@@ -27,13 +27,20 @@
         <div class="terminal"><span class="prompt"># </span>./vimswitch default</div>
 
         <h2>Installation</h2>
-        <p>VimSwitch requires Python 2.7 or 3.2+ to be installed. Fortunately, Python comes pre-installed in most Linux distributions.</p>
-        <p>You can get the latest copy of vimswitch from <a href="https://github.com/priomsrb/vimswitch/raw/master/release/vimswitch">GitHub</a> or from <a href="https://bit.ly/vimswitch">bit.ly/vimswitch</a>:</p>
-        <div class="terminal"><span class="prompt"># </span>wget <a href="https://bit.ly/vimswitch">https://bit.ly/vimswitch</a> && chmod +x vimswitch</div>
-        <p>To run vimswitch simply use:</p>
-        <div class="terminal"><span class="prompt"># </span>./vimswitch</div>
-        <p>or</p>
-        <div class="terminal"><span class="prompt"># </span>python vimswitch</div>
+        <table class="installationList">
+            <tr>
+                <td class="os">Linux</td>
+                <td><div class="terminal"><span class="prompt"># </span>wget <a href="https://bit.ly/vimswitch">https://bit.ly/vimswitch</a> && chmod +x vimswitch</div></td>
+            </tr>
+            <tr>
+                <td class="os">Mac</td>
+                <td><div class="terminal"><span class="prompt"># </span>curl -OL <a href="https://bit.ly/vimswitch">https://bit.ly/vimswitch</a> && chmod +x vimswitch</div></td>
+            </tr>
+            <tr>
+                <td class="os">Windows</td>
+                <td><div class="terminal">Download the latest <a href="https://github.com/priomsrb/vimswitch/releases/download/v0.1/vimswitch.exe">vimswitch.exe</a></div></td>
+            </tr>
+        </table>
 
         <h2>Usage</h2>
         <div class="terminal">
@@ -50,9 +57,6 @@ vimswitch --update             <span class="comment"># Re-download current profi
 vimswitch --help               <span class="comment"># Show help message</span>
 
 </div>
-
-        <h2>Supported Platforms</h2>
-        <p>VimSwitch has been tested on Windows and Linux with Python 2.7, 3.2, 3.3 and 3.4.</p>
 
         <h2>Bugs/Feature Requests</h2>
         <p>If you find a bug or want to request a feature, please visit the <a href="https://github.com/priomsrb/vimswitch/issues">issues</a> page.</p>

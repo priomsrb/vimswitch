@@ -62,3 +62,19 @@ h1 {
     -o-user-select: none;
     user-select: none;
 }
+
+.installationList {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.installationList td {
+    padding: 5px 0px;
+    border-top: 1px solid #C82;
+    border-bottom: 1px solid #C82;
+}
+
+.installationList .os {
+    padding-left: 10px;
+    font-weight: bold;
+}
